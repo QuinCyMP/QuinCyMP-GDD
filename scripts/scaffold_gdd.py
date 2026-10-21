@@ -1,14 +1,15 @@
 #!/usr/bin/env python3
-"""สร้างโครงชุดเอกสารออกแบบเกม พร้อมหัวข้อและตาราง CSV เปล่า
+"""Scaffold a game design document set with standard headings and empty CSV tables.
 
-ใช้:
-    python scaffold_gdd.py <โฟลเดอร์ปลายทาง> --title "ชื่อเกม"
+Usage:
+    python scaffold_gdd.py <target folder> --title "Game name"
     python scaffold_gdd.py ./design --title "Rustfall" --only 01,02,12,06
 
-ทุกไฟล์ที่สร้างมีหัวข้อครบตามโครงมาตรฐาน และมีช่อง [ยังไม่ตัดสินใจ: ...] คาไว้
-เพื่อให้ช่องว่างมองเห็นได้ แทนที่จะถูกกลบด้วยภาษาสวย ๆ
+Every generated file carries the standard headings, one [UNDECIDED: ...] marker
+per section so gaps stay visible instead of hidden behind prose, and an
+`open-questions:` count in its front matter that matches the marker count.
 
-สคริปต์นี้ไม่เขียนทับไฟล์ที่มีอยู่แล้ว — เรียกซ้ำได้ปลอดภัย
+The script never overwrites an existing file. Re-running it is safe.
 """
 
 import argparse
@@ -17,120 +18,120 @@ import sys
 from datetime import date
 from pathlib import Path
 
-TODO = "[ยังไม่ตัดสินใจ: {}]"
+TODO = "[UNDECIDED: {}]"
 
-# slug -> (หัวข้อไฟล์, [ (หัวข้อย่อย, คำถามนำที่ต้องตอบ) ])
+# slug -> (file title, [(section heading, leading question to answer)])
 DOCS = {
     "00-one-pager": ("One-pager", [
-        ("Logline", "ประโยคเดียว: แนว + จุดต่าง + ผู้เล่นทำอะไร"),
-        ("เกมนี้คืออะไร", "สามย่อหน้า ย่อหน้าละไม่เกิน 4 บรรทัด"),
-        ("ทำไมถึงต่าง", "The One Thing เทียบกับเกมจริง 2 ชื่อ"),
-        ("ทำไมถึงมีคนเล่น", "ผู้เล่นเป้าหมายเล่นอะไรอยู่ และหงุดหงิดกับอะไร"),
-        ("ภาพรวมตัวเลข", "world size / session length / time to endgame / concurrency"),
-        ("สถานะและสิ่งที่ต้องการ", "มีอะไรแล้ว ต้องการอะไรจากผู้อ่าน"),
+        ("Logline", "One sentence: genre + difference + what the player does"),
+        ("What this game is", "Three paragraphs, four lines each at most"),
+        ("Why it is different", "The One Thing, compared with two real games"),
+        ("Why anyone will play it", "What the target player plays now, and what frustrates them"),
+        ("The numbers", "world size / session length / time to endgame / concurrency"),
+        ("Status and the ask", "What exists, and what is wanted from the reader"),
     ]),
-    "01-vision": ("วิสัยทัศน์", [
-        ("Pillars", "หลักตัดสินใจ 3 ข้อ ที่คมพอจะปฏิเสธของดี ๆ ได้"),
-        ("The One Thing", "ในเกมนี้ผู้เล่น___ได้ ซึ่ง [เกมจริง] ทำไม่ได้เพราะ___"),
-        ("ผู้เล่นเป้าหมาย", "ตอนนี้เล่นอะไร หงุดหงิดกับอะไร เล่นครั้งละกี่นาที"),
-        ("ทำไมต้องมีผู้เล่นอื่น", "ระบบไหนพังทันทีถ้าเล่นคนเดียว"),
-        ("อารมณ์เป้าหมาย", "10 นาทีแรก / ชั่วโมงที่ 10 / ชั่วโมงที่ 100"),
+    "01-vision": ("Vision", [
+        ("Pillars", "Three decision rules sharp enough to refuse good things"),
+        ("The One Thing", "In this game the player can ___, which [real game] cannot, because ___"),
+        ("Target player", "What they play now, what frustrates them, minutes per session"),
+        ("Why other players are needed", "Which system breaks at once when played alone"),
+        ("Target emotion", "Minute 10 / hour 10 / hour 100"),
     ]),
     "02-core-loops": ("Core loops", [
-        ("Moment loop (1–30 วินาที)", "กดอะไร เห็นอะไรตอบกลับ ตัดสินใจอะไร"),
-        ("Session loop (20–90 นาที)", "เปิดเกมมาทำอะไรก่อน ปิดตอนไหนถึงรู้สึกคุ้ม"),
-        ("Week loop", "อะไรทำให้กลับมาพรุ่งนี้ ที่ไม่ใช่ daily quest"),
-        ("Lifetime loop", "อะไรคือจบ และหลังจากนั้นมีอะไร"),
+        ("Moment loop (1 to 30 seconds)", "What is pressed, what responds, what is decided"),
+        ("Session loop (20 to 90 minutes)", "What is done first after logging in, and when quitting feels earned"),
+        ("Week loop", "What brings the player back tomorrow that is not a daily quest"),
+        ("Lifetime loop", "What finished means, and what exists after it"),
     ]),
-    "03-world": ("โลกและการสำรวจ", [
-        ("ขนาดและเวลาเดินทาง", "km² / ความเร็ว m/s / เวลาข้ามโลก"),
-        ("ความหนาแน่น", "ช่วงห่าง POI เป้าหมาย และจำนวน POI แยกตามชนิด"),
-        ("Traversal", "verb การเดินทาง และผลต่อรูปร่างโลก"),
-        ("Fast travel", "มีไหม ปลดล็อกอย่างไร ต้นทุนอะไร"),
-        ("การแบ่งโซนและ gating", "level / skill / knowledge gate"),
-        ("วิธีผลิตโลกที่ทีมขนาดนี้ทำไหว", "modular kit / procedural + landmark / โลกที่ผู้เล่นเปลี่ยน"),
+    "03-world": ("World and exploration", [
+        ("Size and travel time", "km² / speed in m/s / time to cross"),
+        ("Density", "Target spacing of points of interest, and their count per kind"),
+        ("Traversal", "Travel verbs and their effect on the world's shape"),
+        ("Fast travel", "Yes or no, how it unlocks, what it costs"),
+        ("Zoning and gating", "Level / skill / knowledge gates"),
+        ("How this team builds the world", "Modular kit / procedural plus landmarks / a world players change"),
     ]),
     "04-progression": ("Progression", [
-        ("แหล่งความก้าวหน้า", "เลเวล / เกียร์ / สกิล / ความรู้ผู้เล่น / ชื่อเสียง"),
-        ("Vertical หรือ horizontal", "เลือกอะไร และใครป้อนเนื้อหาให้"),
-        ("เพดานและหลังเพดาน", "มี cap ไหม ถึงแล้วโตทางไหนต่อ"),
-        ("ผู้เล่นใหม่ในปีที่ 2", "ไล่ทันไหม และควรไล่ทันไหม"),
-        ("ตัวเลข", "ชั่วโมงถึง cap / อัตราส่วนพลัง endgame ต่อผู้เล่นใหม่ — ดู data/xp-curve.csv"),
+        ("Sources of progress", "Level / gear / skills / player knowledge / reputation"),
+        ("Vertical or horizontal", "Which, and who feeds the content"),
+        ("The cap and after it", "Is there a cap, and how does a player grow past it"),
+        ("A new player in year two", "Do they catch up, and should they"),
+        ("Numbers", "Hours to cap / endgame-to-new-player power ratio, see data/xp-curve.csv"),
     ]),
-    "05-combat": ("ระบบต่อสู้", [
-        ("รูปแบบ", "tab-target หรือ action — และเหตุผลที่ผูกกับ concurrency"),
-        ("จังหวะ", "GCD / จำนวนปุ่มที่ใช้จริง / การตัดสินใจต่อวินาที"),
-        ("ตัวเลข", "TTK ต่อ mob / TTK ผู้เล่นต่อผู้เล่น"),
-        ("Role และการพึ่งพา", "ถ้ามี role ทำไมคนเดียวทำแทนไม่ได้"),
-        ("ความตาย", "เสียอะไร กลับมานานแค่ไหน"),
+    "05-combat": ("Combat", [
+        ("Form", "Tab-target or action, and the reason, tied to concurrency"),
+        ("Rhythm", "GCD / buttons actually used / decisions per second"),
+        ("Numbers", "TTK per mob / TTK player versus player"),
+        ("Roles and dependence", "If roles exist, why one player cannot cover them all"),
+        ("Death", "What is lost, and how long the return takes"),
     ]),
-    "06-economy": ("เศรษฐกิจ", [
-        ("Faucet", "เงินเข้าจากไหน g/ชม. เท่าไร — ดู data/economy-flow.csv"),
-        ("Sink", "เงินออกทางไหน g/ชม. เท่าไร"),
-        ("สมดุล", "faucet − sink ต่อเดือน คิดเป็นกี่ %"),
-        ("ตลาดผู้เล่น", "bind หรือไม่ / ซื้อขายที่ไหน / ค่าธรรมเนียม / ขั้นต่ำที่ตลาดยังทำงาน"),
-        ("เวลาเป็นสกุลเงิน", "ของสำคัญแต่ละชิ้นใช้เวลากี่ชั่วโมง"),
-        ("ความเสี่ยงจากบอท", "กิจกรรมไหนที่บอททำคุ้มกว่าคน และกันอย่างไร"),
+    "06-economy": ("Economy", [
+        ("Faucets", "Where currency enters, g/hr each, see data/economy-flow.csv"),
+        ("Sinks", "Where currency leaves, g/hr each"),
+        ("Balance", "faucet minus sink per month, as a percentage"),
+        ("Player market", "Bound or not / where trade happens / fee / minimum population for liquidity"),
+        ("Time as currency", "Hours each important item costs"),
+        ("Bot risk", "Which activities a bot does better than a human, and the defence"),
     ]),
-    "07-social-mmo": ("สังคมและโครงสร้าง MMO", [
-        ("Server topology", "shard / megaserver / single shard / instanced — และเหตุผล"),
-        ("Concurrency", "คนต่อพื้นที่ / CCU เป้าหมาย"),
-        ("ทำไมคนแปลกหน้าถึงร่วมมือกัน", "กลไกที่บังคับหรือจูงใจให้พึ่งพากัน"),
-        ("การจับกลุ่มและกิลด์", "กิลด์ทำอะไรได้ที่กลุ่มเพื่อนทำไม่ได้"),
-        ("การกันกริฟและชื่อเสียง", "ใครบังคับใช้ ระบบหรือผู้เล่น"),
-        ("มวลวิกฤต", "ระบบไหนต้องการกี่คนขั้นต่ำ และต่ำกว่านั้นจะ degrade อย่างไร"),
+    "07-social-mmo": ("Social and MMO structure", [
+        ("Server topology", "Shard / megaserver / single shard / instanced, and the reason"),
+        ("Concurrency", "Players per area / target CCU"),
+        ("Why strangers cooperate", "The mechanism that forces or rewards dependence"),
+        ("Grouping and guilds", "What a guild can do that a friend group cannot"),
+        ("Anti-griefing and reputation", "Who enforces it: the system or players"),
+        ("Critical mass", "Minimum players per system, and how it degrades below that"),
     ]),
-    "08-endgame-liveops": ("Endgame และ live ops", [
-        ("300 ชั่วโมงแล้วทำอะไร", "รูปแบบ endgame หลัก"),
-        ("อัตราการผลิตเทียบการบริโภค", "ทีมผลิตได้เดือนละเท่าไร ผู้เล่นหนักกินเดือนละเท่าไร"),
-        ("เนื้อหาที่ผู้เล่นสร้างให้กัน", "ระบบไหนที่ผู้เล่นเติมเนื้อหาเอง"),
-        ("จังหวะอัปเดต", "ทุกกี่สัปดาห์ ใครทำ"),
+    "08-endgame-liveops": ("Endgame and live ops", [
+        ("After 300 hours", "The primary endgame form"),
+        ("Production versus consumption", "What the team ships per month versus what a heavy player consumes"),
+        ("Content players make for each other", "Which systems players fill themselves"),
+        ("Update cadence", "Every how many weeks, by whom"),
     ]),
-    "09-monetization": ("โมเดลรายได้", [
-        ("รูปแบบ", "B2P / subscription / F2P และเหตุผล"),
-        ("ผลย้อนกลับต่อ design", "โมเดลนี้บังคับให้ออกแบบอะไรต่างไป"),
-        ("สิ่งที่จะไม่ขายเด็ดขาด", "เส้นที่ไม่ข้าม และเหตุผล"),
-        ("ตัวเลข", "ราคา / ARPU ที่สมเหตุสมผล / จุดคุ้มทุนค่า server"),
+    "09-monetization": ("Monetization", [
+        ("Model", "B2P / subscription / F2P, and the reason"),
+        ("Effect on the design", "What this model forces the design to do differently"),
+        ("What will never be sold", "The line not crossed, and why"),
+        ("Numbers", "Price / plausible ARPU / server break-even point"),
     ]),
-    "10-art-audio": ("ทิศทางศิลป์และเสียง", [
-        ("สไตล์ภาพ", "เลือกอะไร และเลือกเพราะทีมขนาดนี้ผลิตไหว"),
-        ("งบทางเทคนิค", "จำนวน asset สำหรับ vertical slice / texture set / modular kit"),
-        ("เสียง", "จำนวนแทร็ก จำนวน SFX ขั้นต่ำ"),
-        ("ที่มาของภาพอ้างอิงทุกภาพ", "จำเป็นก่อนเอกสารออกสู่สายตาผู้ซื้อ"),
+    "10-art-audio": ("Art and audio", [
+        ("Visual style", "Chosen because this team can produce it"),
+        ("Technical budget", "Asset count for the vertical slice / texture sets / modular kit"),
+        ("Audio", "Minimum track count and SFX count"),
+        ("Source of every reference image", "Required before the document reaches a buyer"),
     ]),
-    "11-tech-assumptions": ("ข้อกำหนดทางเทคนิคที่ design เรียกร้อง", [
-        ("ผู้เล่นพร้อมกันในพื้นที่เดียว", "กี่คน"),
-        ("Tick rate ที่ระบบต่อสู้ต้องการ", ""),
-        ("ข้อมูลที่ต้องคงอยู่ถาวร", "inventory / ที่ดิน / ความสัมพันธ์ / สภาพโลก"),
-        ("Server ตัดสินอะไร client ตัดสินอะไร", "ทุกอย่างที่แลกเป็นมูลค่าได้ = server เท่านั้น"),
-        ("การโหลดโลก", "streaming / zone / instance"),
+    "11-tech-assumptions": ("Tech assumptions the design demands", [
+        ("Players visible in one area", "How many"),
+        ("Tick rate the combat needs", ""),
+        ("Data that must persist", "Inventory / land / relationships / world state"),
+        ("Server decides, client decides", "Anything convertible to value is server-only"),
+        ("World loading", "Streaming / zones / instances"),
     ]),
-    "12-scope-roadmap": ("ขอบเขตและลำดับการสร้าง", [
-        ("Vertical slice", "เล็กที่สุดที่พิสูจน์ The One Thing — พื้นที่ ระบบ asset เวลา"),
-        ("ลำดับการสร้าง", "ระบบไหนต้องมาก่อนเพราะระบบอื่นพึ่งมัน"),
-        ("สิ่งที่ตัดออกในเวอร์ชันแรก", "พร้อมเงื่อนไขที่จะเอากลับมา"),
-        ("แผนสำรองถ้าย่อ scope", "MMO เล็ก 100–500 คน จะหน้าตาอย่างไร"),
+    "12-scope-roadmap": ("Scope and roadmap", [
+        ("Vertical slice", "The smallest thing that proves The One Thing: area, systems, assets, time"),
+        ("Build order", "Which system comes first because others depend on it"),
+        ("Cut from version one", "With the condition for bringing each back"),
+        ("Fallback if scope shrinks", "What a 100 to 500 player MMO version looks like"),
     ]),
-    "13-risks": ("ความเสี่ยง", [
-        ("ตารางความเสี่ยง", "เรียงตามผลกระทบ × โอกาส พร้อมสัญญาณเตือนและแผนรับมือ"),
+    "13-risks": ("Risks", [
+        ("Risk table", "Sorted by impact × likelihood, with early warnings and mitigations"),
     ]),
 }
 
 PITCH = {
-    "pitch-deck-outline": ("โครง pitch deck", [
-        ("สไลด์ 1–11", "ดู references/selling-the-design.md — อย่าลืมสไลด์ 'สิ่งที่ต้องการ'"),
+    "pitch-deck-outline": ("Pitch deck outline", [
+        ("Slides 1 to 11", "See references/pitch.md. Do not forget the ask slide."),
     ]),
-    "buyer-brief": ("บรีฟตามประเภทผู้รับ", [
-        ("ผู้รับคือใคร", "A พับลิชเชอร์/นักลงทุน · B สตูดิโอ/ผู้ซื้อ IP · C ผู้ร่วมทีม"),
-        ("เขาถามอะไรในใจ", ""),
-        ("สิ่งที่ต้องเน้น", ""),
-        ("สิ่งที่ต้องตัดออก", ""),
+    "buyer-brief": ("Buyer brief", [
+        ("Who the recipient is", "A publisher or investor / B studio or IP buyer / C co-founder"),
+        ("The question in their head", ""),
+        ("What to emphasise", ""),
+        ("What to leave out", ""),
     ]),
 }
 
 CSV_HEADERS = {
     "xp-curve.csv": ["level", "xp_required", "xp_cumulative", "est_hours", "est_hours_cumulative"],
-    "items.csv": ["id", "name_th", "name_en", "tier", "slot", "power", "value_g", "bind", "source"],
+    "items.csv": ["id", "name", "tier", "slot", "power", "value_g", "bind", "source"],
     "drop-tables.csv": ["mob_id", "item_id", "drop_rate", "min_qty", "max_qty", "pity_after"],
     "mob-stats.csv": ["id", "name", "level", "hp", "dps", "xp_reward", "gold_reward", "ttk_seconds"],
     "skills.csv": ["id", "name", "class", "cooldown", "cost", "damage_coeff", "unlock_level"],
@@ -140,24 +141,27 @@ CSV_HEADERS = {
 
 def render(title: str, game: str, sections, slug: str) -> str:
     lines = [
+        "---",
+        f"open-questions: {len(sections)}",
+        "---",
         f"# {title}",
         "",
-        f"> เกม: **{game}** · ปรับปรุงล่าสุด {date.today().isoformat()}",
+        f"> Game: **{game}** · last updated {date.today().isoformat()}",
         "",
     ]
     for heading, prompt in sections:
         lines.append(f"## {heading}")
         lines.append("")
         if prompt:
-            lines.append(f"<!-- ต้องตอบ: {prompt} -->")
+            lines.append(f"<!-- Answer: {prompt} -->")
             lines.append("")
         lines.append(TODO.format(prompt or heading))
         lines.append("")
-    if slug not in ("00-one-pager",):
+    if slug != "00-one-pager":
         lines += [
-            "## ทางเลือกที่พิจารณาแล้วตัดทิ้ง",
+            "## Alternatives considered and rejected",
             "",
-            "| ทางเลือก | ตัดทิ้งเพราะ |",
+            "| Alternative | Rejected because |",
             "|---|---|",
             "| | |",
             "",
@@ -175,17 +179,17 @@ def write_if_absent(path: Path, content: str, created: list, skipped: list) -> N
 
 
 def main() -> int:
-    ap = argparse.ArgumentParser(description="ตั้งโครงชุดเอกสารออกแบบเกม")
-    ap.add_argument("target", help="โฟลเดอร์ปลายทาง เช่น ./design")
-    ap.add_argument("--title", required=True, help="ชื่อเกม")
-    ap.add_argument("--only", help="สร้างเฉพาะบางไฟล์ เช่น 01,02,12,06")
+    ap = argparse.ArgumentParser(description="Scaffold a game design document set")
+    ap.add_argument("target", help="target folder, for example ./design")
+    ap.add_argument("--title", required=True, help="game name")
+    ap.add_argument("--only", help="generate only these files, for example 01,02,12,06")
     args = ap.parse_args()
 
     root = Path(args.target)
     created: list = []
     skipped: list = []
 
-    # ตัด leading zero ทิ้งทั้งสองฝั่ง เพราะบางเชลล์ (PowerShell) แปลง 01 เป็น 1 ให้เอง
+    # Strip leading zeros on both sides: some shells (PowerShell) turn 01 into 1.
     wanted = None
     if args.only:
         wanted = {p.strip().lstrip("0") or "0" for p in args.only.split(",") if p.strip()}
@@ -199,6 +203,18 @@ def main() -> int:
         for slug, (title, sections) in PITCH.items():
             write_if_absent(root / "pitch" / f"{slug}.md", render(title, args.title, sections, slug), created, skipped)
 
+        glossary = "\n".join([
+            "# Glossary",
+            "",
+            f"> Game: **{args.title}** · every in-game name, English first.",
+            "",
+            "| Name | Meaning | Avoid |",
+            "|---|---|---|",
+            "| | | |",
+            "",
+        ])
+        write_if_absent(root / "GLOSSARY.md", glossary, created, skipped)
+
         for name, headers in CSV_HEADERS.items():
             path = root / "data" / name
             if path.exists():
@@ -210,12 +226,12 @@ def main() -> int:
             created.append(path)
 
     for p in created:
-        print(f"สร้าง  {p}")
+        print(f"created  {p}")
     for p in skipped:
-        print(f"ข้าม   {p} (มีอยู่แล้ว)")
-    print(f"\nรวม: สร้างใหม่ {len(created)} ไฟล์, ข้าม {len(skipped)} ไฟล์")
+        print(f"skipped  {p} (exists)")
+    print(f"\n{len(created)} created, {len(skipped)} skipped")
     if created:
-        print("ลำดับที่แนะนำให้เขียน: 01 → 02 → 12 → 06 แล้วค่อยไล่ที่เหลือ (00 เขียนท้ายสุด)")
+        print("Suggested writing order: 01 -> 02 -> 12 -> 06, then the rest. Write 00 last.")
     return 0
 
 

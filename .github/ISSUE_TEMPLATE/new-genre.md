@@ -1,13 +1,13 @@
 ---
-name: เพิ่มแนวเกม / Add a genre reference
-about: เสนอ reference ใหม่สำหรับแนวเกมที่ยังไม่มี (roguelike, survival, 4X, ...)
+name: Add a genre reference
+about: Propose a new reference for a genre the skill does not cover yet (roguelike, survival, 4X, ...)
 labels: enhancement, good first issue
 ---
 
-**แนวเกม / Genre:**
+**Genre:**
 
-**คำถามนำที่ GDD ของแนวนี้ต้องตอบ (อย่างน้อย 5 ข้อ) / Leading questions a GDD of this genre must answer:**
+**Leading questions a GDD of this genre must answer (at least 5):**
 
-**ตัวเลขที่ขาดไม่ได้ / Numbers that must appear:**
+**Numbers that must appear:**
 
-**กับดักที่คนเขียน GDD แนวนี้ชอบตก / Common traps:**
+**Traps designers of this genre fall into:**

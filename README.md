@@ -1,91 +1,98 @@
 # QuinCyMP GDD
 
-**สกิลสำหรับ AI coding agent (Claude Code, Codex, OpenCode) ที่เขียนเอกสารออกแบบเกม (GDD) ให้ "ตัดสินใจ" ไม่ใช่ "บรรยาย"**
+An agent skill for Claude Code, Codex, OpenCode and other agents that write game design documents. The documents it produces record decisions, not dreams: every section says what was decided, why, which alternatives were rejected, and what the numbers are. Anything still open is marked `[UNDECIDED: ...]` so it can be counted and found.
 
-*An agent skill that writes game design documents that record decisions instead of describing dreams. Thai prose, English names for everything in-game. Specialised in MMORPG and open-world design, usable for any genre.*
+Strongest for MMORPG and open-world design. Usable for any genre.
 
-> เอกสารออกแบบคือบันทึกการตัดสินใจ ไม่ใช่คำบรรยายความฝัน
-> ทุกหัวข้อต้องตอบ 4 อย่าง: **ตัดสินใจว่าอะไร / เพราะอะไร / ตัดทางเลือกไหนทิ้ง / ตัวเลขเท่าไร**
+## What it does
 
-## ทำอะไรได้ / What it does
-
-| งาน | ผลลัพธ์ |
+| Task | What you get |
 |---|---|
-| เริ่มออกแบบเกมจากศูนย์ (เฟส A) | ล็อก 5 ข้อใหญ่ก่อน แล้วตั้งโครงเอกสาร 14 ไฟล์ + pitch + ตาราง CSV ด้วย `scripts/scaffold_gdd.py` |
-| ต่อยอดโปรเจกต์ที่มีเอกสารอยู่แล้ว (เฟส B) | ตรวจความขัดแย้ง ลิงก์ และ "บ้านหลัก" ของทุกกฎ ก่อนเพิ่มของใหม่ (`references/living-vault.md`) |
-| ออกแบบคลาส อาชีพ สกิล | เกณฑ์ผ่าน 5 ข้อ ข้อห้าม 9 ข้อ research 4 ช่อง (`references/class-and-skill-design.md`) |
-| บาลานซ์เศรษฐกิจ | สูตร faucet/sink, drop rate, xp curve, เงินเฟ้อ ใส่ตัวเลขแล้วได้คำตอบทันที (`references/economy-math.md`) |
-| โลก open world | ขนาดโลก ความหนาแน่น POI traversal การแบ่งโซน (`references/open-world.md`) |
-| ระบบ MMO | server topology, progression, social, endgame, monetization (`references/mmo-systems.md`) |
-| ขายหรือ pitch | โครง pitch deck 11 สไลด์ และบรีฟแยกตามผู้รับ (`references/selling-the-design.md`) |
+| Start a game from zero (Phase A) | Five decisions locked in question rounds before any file is written, then a 14-file document set with `GLOSSARY.md`, pitch files and CSV tables from `scripts/scaffold_gdd.py` |
+| Extend a project that already has documents (Phase B) | Contradiction, link and single-home checks before anything new is added, so old files never silently become false |
+| Design classes, jobs and skills | A verb count, five pass criteria, nine prohibitions, four research shelves, library versus slots, boundary tables between close classes |
+| Balance an economy | Working formulas for faucets and sinks, drop rates and pity, xp curves, power ratios, market liquidity, time as currency |
+| Size an open world | World size from density and travel time, points of interest by kind, traversal verbs, gating, how a small team builds a big world |
+| Design MMO systems | Server topology, concurrency, progression, social glue, endgame consumption, anti-cheat, onboarding |
+| Sell or hand over the design | Five real paths to market, three buyer briefs, the send order, rights in plain terms, an 11-slide deck outline |
 
-## ติดตั้ง / Install
+## Install
 
-**Claude Code** (ทั้งเครื่อง / global):
+Claude Code, for every project:
 
 ```bash
 git clone https://github.com/QuinCyMP/QuinCyMP-GDD ~/.claude/skills/quincymp-gdd
 ```
 
-**Claude Code** (เฉพาะโปรเจกต์ / per project):
+Claude Code, one project:
 
 ```bash
 git clone https://github.com/QuinCyMP/QuinCyMP-GDD .claude/skills/quincymp-gdd
 ```
 
-**Codex / agents ที่อ่าน `.agents/skills/`:**
+Codex and other agents that read `.agents/skills/`:
 
 ```bash
 git clone https://github.com/QuinCyMP/QuinCyMP-GDD .agents/skills/quincymp-gdd
 ```
 
-**ผ่าน skills CLI:**
+With the [skills CLI](https://skills.sh):
 
 ```bash
 npx skills add QuinCyMP/QuinCyMP-GDD
 ```
 
-## ใช้งาน / Usage
+## Use
 
-พิมพ์กับ agent ได้เลย เช่น
+Talk to the agent as you would to a designer:
 
-- "อยากทำเกม MMO แนว survival ช่วยคิดระบบ"
-- "เขียน GDD ให้เกมนี้"
-- "บาลานซ์ดาเมจ / คิดระบบ crafting / ออกแบบคลาส"
-- "ขายไอเดียเกมนี้ให้พับลิชเชอร์"
+- "I want to make a survival MMO. Help me design the systems."
+- "Write a GDD for this game."
+- "Balance the damage." "Design the crafting system." "Design the classes."
+- "Audit my design folder for contradictions."
+- "Pitch this to a publisher."
 
-สกิลจะถามคำถามที่ต้องตอบก่อนเขียน และทำเครื่องหมาย `[ยังไม่ตัดสินใจ: ...]` ทุกช่องที่ยังไม่มีคำตอบ แทนการกลบด้วยภาษาสวย ๆ
+The skill asks the questions it needs before writing, gives a recommended answer under each one, and marks every unanswered point in the document instead of covering it with prose.
 
-ตั้งโครงเอกสารด้วยมือ:
+Scaffold a document set by hand:
 
 ```bash
-python scripts/scaffold_gdd.py ./design --title "ชื่อเกม"
-python scripts/scaffold_gdd.py ./design --title "ชื่อเกม" --only 01,02,12,06
+python scripts/scaffold_gdd.py ./design --title "Game name"
+python scripts/scaffold_gdd.py ./design --title "Game name" --only 01,02,12,06
 ```
 
-สคริปต์ไม่เขียนทับไฟล์ที่มีอยู่ เรียกซ้ำได้ปลอดภัย ไม่ต้องติดตั้งอะไรเพิ่ม (Python 3.8+ standard library)
+The script never overwrites an existing file and needs only Python 3.8 and the standard library.
 
-## โครงสร้าง / Layout
+## Layout
 
 ```
-SKILL.md                         กติกาหลัก เฟส A/B และสิ่งที่ทำให้ GDD ดูสมัครเล่น
+SKILL.md                      The process: phases, rules for every file, amateur signals, delivery checklist
 references/
-  phase-a-bootstrap.md           เริ่มจากศูนย์: 5 ข้อที่ต้องล็อกก่อน
-  gdd-structure.md               โครง 14 ไฟล์ พร้อมคำถามนำรายหัวข้อ
-  living-vault.md                ต่อยอดของเดิมโดยไม่ทำให้ของเก่ากลายเป็นเท็จ
-  class-and-skill-design.md      คลาส อาชีพ สกิล
-  economy-math.md                สูตรเศรษฐกิจและตัวเลข
-  open-world.md                  โลกและการสำรวจ
-  mmo-systems.md                 ระบบเฉพาะแนว MMO
-  selling-the-design.md          pitch และการขาย
+  bootstrap.md                Phase A: the five locks, the document set, the constraint talk
+  document-structure.md       What each of the 14 files must contain, and what to ask to get it
+  living-vault.md             Phase B: single home, markers, links, contradictions, boundaries, renames
+  classes-and-skills.md       Classes, jobs and skills
+  economy.md                  Economy math
+  world.md                    Open world
+  mmo-systems.md              MMO systems
+  pitch.md                    Selling or handing over the design
 scripts/
-  scaffold_gdd.py                ตั้งโครงชุดเอกสาร + CSV
+  scaffold_gdd.py             Scaffolds the document set, GLOSSARY.md and CSV tables
+agents/
+  openai.yaml                 Display metadata for Codex
 ```
 
-## ภาษา / Language
+## Language
 
-คำอธิบายทั้งหมดเป็นภาษาไทย ชื่อของทุกอย่างในเกมเป็นภาษาอังกฤษ เพราะชื่อในเอกสารต้องเป็นชื่อเดียวกับที่จะอยู่ในโค้ด
-Contributions in English are welcome. See [CONTRIBUTING.md](CONTRIBUTING.md).
+Prose is written in the team's working language. Every name of a thing in the game is English, because the names in the document must be the names in the code. The skill was first written for a Thai-speaking team and is now maintained in English.
+
+## Credits
+
+The structure of this skill follows two sets of skills whose authors publish them under MIT: [pstack](https://github.com/cursor/plugins/tree/main/pstack) by poteto (short `SKILL.md` with phases, a `references/` folder read on demand, a delivery checklist and a final-response section) and [Matt Pocock's skills](https://github.com/mattpocock/skills) (trigger-led descriptions, decisions interviewed in rounds, reference files linked with the condition for reading them). No text from either was copied.
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md). Issues labelled `good first issue` are a fine place to start.
 
 ## License
 

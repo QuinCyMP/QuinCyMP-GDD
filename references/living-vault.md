@@ -1,66 +1,50 @@
-# ดูแลคลังเอกสารที่โตแล้ว — เฟส B
+# Phase B: the living vault
 
-**อ่านไฟล์นี้ก่อนแตะไฟล์ใด ๆ ในโปรเจกต์ที่มีเอกสารอยู่แล้วหลายสิบไฟล์**
+Read this before touching any file in a project that already has dozens of design documents.
 
----
+In Phase A the risk is writing beautifully without deciding. In Phase B the risk is deciding again while forgetting the opposite was already decided. A contradictory document is worse than an incomplete one: an incomplete document says what is unknown, a contradictory one leaves the reader unsure which line to believe, so they stop believing all of it.
 
-## หลักการเดียวของทั้งไฟล์นี้
+## 1. Four checks before writing a line
 
-> ## **ในเฟส A ความเสี่ยงคือเขียนสวยแต่ไม่ได้ตัดสินใจ
-> ## ในเฟส B ความเสี่ยงคือตัดสินใจใหม่โดยลืมว่าเคยตัดสินใจตรงข้ามไว้แล้ว**
-
-เอกสารที่ขัดกันเองแย่กว่าเอกสารที่ไม่สมบูรณ์ — **เอกสารไม่สมบูรณ์บอกว่ายังไม่รู้
-ส่วนเอกสารที่ขัดกันเองทำให้คนอ่านไม่รู้ว่าจะเชื่อข้อไหน และเลิกเชื่อทั้งฉบับ**
-
----
-
-## 1. 🔴 สี่อย่างที่ต้องเช็คก่อนเขียนอะไรลงไป
-
-| | เช็คอะไร | ทำยังไง |
+| | Check | How |
 |---|---|---|
-| ① | **เรื่องนี้มีบ้านอยู่แล้วหรือยัง** | `grep -ril "<คำสำคัญ>"` — ถ้ามีไฟล์ที่เป็นเจ้าของอยู่แล้ว **ไปเขียนที่นั่น อย่าเปิดบ้านใหม่** |
-| ② | **ระบบที่กำลังจะอ้างถึง มีอยู่จริงในเอกสารไหม** | สกิลที่อ้างระบบที่ไม่มีอยู่ คือสกิลที่ต้องรื้อทั้งตัวทีหลัง |
-| ③ | **ของใหม่นี้ทำให้ประโยคไหนกลายเป็นเท็จ** | ค้นคำที่ขัดกันโดยตรง เช่น เพิ่มระบบคลาส → ค้น `"ไม่มีระบบ class"` |
-| ④ | **ไฟล์ข้างเคียงเขียนคำเดียวกันไว้ไหม** | สองไฟล์ที่ใช้คำว่า *"แนว"* หรือ *"สัญญาณ"* เหมือนกัน = เส้นแบ่งยังไม่มี |
+| 1 | **Does this topic already have a home?** | `grep -ril "<keyword>"`. If a file owns it, write there. Do not open a new home. |
+| 2 | **Does the system about to be referenced exist in the vault?** | A skill that cites a system that does not exist is a skill that gets torn out later. |
+| 3 | **Which sentence does the new thing make false?** | Search for the direct negation. Adding a class system: search `"no class system"`. |
+| 4 | **Does a neighbouring file use the same word?** | Two files both using "formation" or "signal" means the boundary between them has not been drawn. |
 
----
+## 2. Single home
 
-## 2. ⭐ บ้านหลักแห่งเดียว — กฎที่กันคลังไม่ให้เน่า
+> Every rule has exactly one home. Everything else links to it.
 
-> **ทุกกฎมีบ้านหลักได้แค่ที่เดียว · ที่เหลือลิงก์ไปหา**
+One rule written in three files is not emphasis three times; it is three versions that disagree in two years, because whoever edits it finds only one.
 
-กฎเดียวกันที่เขียนไว้ 3 ไฟล์ **ไม่ได้แปลว่าย้ำ 3 รอบ แต่แปลว่าอีกสองปีมันจะไม่ตรงกัน 3 แบบ**
-เพราะคนแก้จะเจอแค่ที่เดียว
-
-### วิธีหาว่ามีกฎซ้ำไหม
+Find duplicates with the rule's most distinctive sentence:
 
 ```bash
-# เอาประโยคเอกลักษณ์ของกฎมาค้นทั้งคลัง
-grep -rn "ประโยคที่จำได้" --include="*.md" .
+grep -rn "the memorable sentence" --include="*.md" .
 ```
 
-**เจอมากกว่าหนึ่งไฟล์ = ต้องเลือกบ้านหลัก** โดยใช้เกณฑ์นี้:
+More than one file means a home must be chosen:
 
-| กฎว่าด้วยอะไร | บ้านหลักคือ |
+| The rule is about | Home |
 |---|---|
-| ค่าหรือหน่วยของตัวเลข | ไฟล์ที่นิยามค่านั้น |
-| กติกาที่ข้ามหลายระบบ | ไฟล์กติกากลาง ไม่ใช่ไฟล์ที่ใช้มันคนแรก |
-| สิ่งที่อาชีพ/คลาส/ระบบเดียวใช้ | ไฟล์ของสิ่งนั้นเอง |
+| A number or its unit | The file that defines the number |
+| A rule spanning several systems | The central rules file, not the first file that used it |
+| Something one job, class or system uses | That thing's own file |
 
-⚠️ **อย่าลบสำเนาทิ้งเฉย ๆ** — แทนที่ด้วยลิงก์หนึ่งบรรทัด ไม่งั้นคนที่เคยอ่านตรงนั้นจะคิดว่ากฎหายไป
+Never delete a copy outright. Replace it with a one-line link, or readers who remember it there will think the rule is gone.
 
----
+## 3. Machine-readable markers
 
-## 3. 🔴 Marker ที่เครื่องอ่านได้ — ช่องว่างที่มองไม่เห็นคือช่องว่างที่ไม่มีใครแก้
-
-ช่องที่ยังไม่ตัดสินใจ **ต้องเป็นข้อความที่ค้นเจอด้วยสคริปต์** ไม่ใช่ประโยคสวย ๆ ในย่อหน้า
+An undecided point must be a string a script can find, not a graceful sentence in a paragraph:
 
 ```markdown
-`[ยังไม่ตัดสินใจ: <คำถามที่ต้องตอบ>]`
-`[ตัวเลขตั้งต้น]`
+[UNDECIDED: <the question to answer>]
+[PROVISIONAL: <the value>]
 ```
 
-**และ frontmatter ต้องตรงกับจำนวนจริงเสมอ:**
+Front matter must always match the real count:
 
 ```yaml
 ---
@@ -69,139 +53,112 @@ open-questions: 6
 ```
 
 ```bash
-# ตรวจว่าตรงกันไหมทั้งคลัง
+# Check the whole vault
 for f in *.md; do
-  n=$(grep -o "\[ยังไม่ตัดสินใจ" "$f" | wc -l)
+  n=$(grep -o "\[UNDECIDED" "$f" | wc -l)
   fm=$(grep -m1 "^open-questions:" "$f" | grep -o "[0-9]*")
-  [ -n "$fm" ] && [ "$n" != "$fm" ] && echo "$f: marker=$n แต่ frontmatter=$fm"
+  [ -n "$fm" ] && [ "$n" != "$fm" ] && echo "$f: markers=$n front matter=$fm"
 done
 ```
 
-> ### 🔴 อาการที่เจอบ่อยและอันตรายที่สุด
-> **frontmatter เขียน `open-questions: 3` แต่ในเนื้อไม่มี marker เลยสักตัว**
-> แปลว่า **ของค้างจริงหายไปจากทุกกระดานงานและทุก query** — ไม่มีใครเห็นมันอีกเลย
+The most common and most dangerous symptom: front matter says `open-questions: 3` and the body has no marker at all. The real open work has vanished from every board and every query. Nobody will see it again.
 
----
+## 4. Links
 
-## 4. ลิงก์ — ตรวจทุกครั้งที่แก้ชื่อหรือย้ายไฟล์
+In a vault that uses wikilinks (`[[file#heading|text]]`), a broken link raises no error. It goes quiet.
 
-ในคลังที่ใช้ wikilink `[[ไฟล์#หัวข้อ|ข้อความ]]` **ลิงก์เสียไม่ขึ้น error** มันแค่เงียบ
-
-**ต้องตรวจสองชั้น:**
-
-| ชั้น | เช็คอะไร |
+| Layer | Check |
 |---|---|
-| **ลิงก์ไฟล์** | `[[ชื่อไฟล์]]` ชี้ไปไฟล์ที่มีอยู่จริงไหม |
-| **ลิงก์หัวข้อ** | `[[ไฟล์#หัวข้อ]]` — **หัวข้อนั้นยังมีชื่อเดิมไหม** ← พังบ่อยที่สุดเวลาแก้หัวข้อ |
+| **File link** | `[[filename]]` points to a file that exists |
+| **Heading link** | `[[file#heading]]`: the heading still has that exact name. Breaks most often when headings are edited. |
 
-⚠️ **จุดที่สคริปต์มักหลง** — `\|` ที่ escape ในตาราง · ชื่อไฟล์ในโค้ดสแปนที่ไม่ใช่ลิงก์จริง
+Scripts usually trip over escaped `\|` inside tables and file names in code spans that are not real links. Write the link checker once, keep it in the project, and run it after every edit. It is far cheaper than hunting later.
 
-**เขียนสคริปต์ตรวจเก็บไว้ครั้งเดียว แล้วรันทุกครั้งหลังแก้** — ถูกกว่าการไล่หาทีหลังมาก
+## 5. Contradiction hunting
 
----
-
-## 5. 🔴 ตรวจความขัดแย้ง — ห้าอาการที่ต้องไล่หา
-
-| อาการ | วิธีหา | ตัวอย่างจริง |
+| Symptom | How to find it | Real example |
 |---|---|---|
-| **ข้อความที่ตายแล้วแต่ยังมีคนอ้าง** | ค้นชื่อระบบที่เลิกใช้ | ไฟล์หนึ่งเขียนว่าระบบถูกแทนแล้ว **แต่ต้นทางยังมีของเดิมอยู่ และอีก 6 ไฟล์อ้างต้นทาง** |
-| **ตัวเลขเดียวกันคนละค่า** | ค้นตัวเลขนั้นทั้งคลัง | เพดานความสามารถเขียนไว้ `~30%` ที่หนึ่ง แต่ไฟล์จริงใช้ `60%` |
-| **คำเดียวกันคนละความหมาย** | ค้นคำ แล้วอ่านบริบททีละที่ | `30%` = ทักษะที่ฝึก หรือ พลังรวม |
-| **สองไฟล์เป็นเจ้าของเรื่องเดียวกัน** | ดูหัวข้อที่ชื่อคล้ายกัน | ไฟล์ A กับ B ต่างมีหัวข้อ *"แนวรบและสัญญาณ"* |
-| **ของใหม่ทำให้ของเก่าเป็นเท็จ** | หลังเพิ่มระบบใหญ่ ค้นคำปฏิเสธของมัน | เพิ่ม 254 คลาส แต่สองไฟล์ยังเขียนว่า *"ไม่มีระบบ class"* |
+| **Dead text still cited** | Search for retired system names | One file says a system was replaced, but the source still carries the old one and six files cite the source |
+| **One number, two values** | Search for the number across the vault | A cap written as `~30%` in one place, `60%` in the file that uses it |
+| **One word, two meanings** | Search the word, read each context | `30%` meaning trained skill in one file and total power in another |
+| **Two files own one topic** | Look for similar headings | File A and file B both have "Fronts and signals" |
+| **New thing makes old text false** | After a large addition, search its negation | 254 classes added while two files still say "there is no class system" |
 
-### วิธีทำงานกับสิ่งที่เจอ
+### What to do with findings
 
-🔴 **อย่าแก้เอง** ถ้ามันเป็นการตัดสินใจของเจ้าของ — **ให้ทำไฟล์รวมข้อขัดแย้ง**
-แต่ละข้อเขียนแบบนี้:
+Do not fix it yourself when it is the owner's decision. Write a conflicts file, one entry per conflict:
 
 ```markdown
-## C4 · <ชื่อปัญหาสั้น ๆ> 🔴
+## C4 · <short name>
 
-| ที่ไหน | เขียนว่าอะไร |
+| Where | Says |
 |---|---|
-| [[ไฟล์ A]] บรรทัด 96 | *"ยกข้อความจริงมา"* |
-| [[ไฟล์ B]] บรรทัด 305 | *"ยกข้อความจริงมา"* |
+| [[file A]] line 96 | *"exact quote"* |
+| [[file B]] line 305 | *"exact quote"* |
 
-| ทางเลือก | ผลที่ตามมา |
+| Option | Consequence |
 |---|---|
-| **A** | … ⭐ |
-| **B** | … |
+| **A** | ... (recommended) |
+| **B** | ... |
 ```
 
-**ยกข้อความจริงมาเสมอ อย่าสรุปเอง** — เจ้าของต้องเห็นด้วยตาว่ามันขัดกันจริง
+Quote the exact text, never a summary. The owner must see with their own eyes that it contradicts.
 
----
+## 6. Boundaries between close files
 
-## 6. เส้นแบ่งระหว่างไฟล์ที่ใกล้กัน — เขียนไว้บนหัวไฟล์ทั้งสองฝั่ง
-
-เมื่อสองระบบใกล้กันจนเผลอเขียนทับกันได้ *(สองคลาสที่คล้ายกัน · สองสกุลเงิน · สองระบบเสริมแกร่ง)*
-**ให้ทำตารางเส้นแบ่งไว้บนหัวไฟล์ของทั้งคู่ ข้อความเดียวกัน**
-
-และเพิ่มแถวสุดท้ายที่ทำให้ตรวจด้วยเครื่องได้:
+When two systems sit close enough to write over each other (two similar classes, two currencies, two enhancement systems), put a **boundary table at the top of both files**, identical text. Add a last row that makes it machine-checkable:
 
 ```markdown
-| **คำที่ห้ามใช้ในไฟล์นี้** | "รับแทน" · "บัง" | "สัญญาณ" · "สั่งการ" |
+| **Words banned in this file** | "intercept" · "shield" | "signal" · "command" |
 ```
 
 ```bash
-# ตรวจว่าเส้นแบ่งยังทำงานไหม
-grep -c "รับแทน" ไฟล์ที่ห้ามใช้คำนี้.md
+# Is the boundary still holding?
+grep -c "intercept" the-file-that-bans-it.md
 ```
 
-> **เส้นแบ่งที่ตรวจด้วยเครื่องไม่ได้ คือเส้นแบ่งที่จะหายไปภายในสามเดือน**
+A boundary that cannot be checked by a machine is a boundary that disappears within three months.
 
----
+## 7. Renumbering or renaming without breaking the vault
 
-## 7. เรียงเลขหรือเปลี่ยนชื่อไฟล์โดยไม่พัง
+1. **Count the inbound links first:** `grep -rl "\[\[old-name" | wc -l`.
+2. **Above about 10 files, ask whether it is worth it.** A wrong name with complete links beats a right name with broken ones.
+3. **Change it with one script across the vault**, never file by file.
+4. **Run the link check immediately after** and report the numbers before and after.
 
-1. **นับก่อนว่ามีใครลิงก์มาบ้าง** — `grep -rl "\[\[ชื่อเดิม" | wc -l`
-2. **ถ้าเกิน ~10 ไฟล์ ให้ถามก่อนว่าคุ้มไหม** — ชื่อที่ผิดแต่ลิงก์ครบ ดีกว่าชื่อที่ถูกแต่ลิงก์ขาด
-3. **เปลี่ยนด้วยสคริปต์ทีเดียวทั้งคลัง** ไม่ใช่ไล่แก้ทีละไฟล์
-4. **รันตรวจลิงก์ทันทีหลังเปลี่ยน** และรายงานตัวเลข *ก่อน → หลัง*
-
----
-
-## 8. ทุกไฟล์จบด้วยสองหัวข้อนี้เสมอ
+## 8. Every file ends with two sections
 
 ```markdown
-## สิ่งที่ยังไม่ตัดสิน
-| หัวข้อ |
+## Open questions
+| Question |
 |---|
-| `[ยังไม่ตัดสินใจ: …]` |
+| [UNDECIDED: ...] |
 
-## ทางเลือกที่พิจารณาแล้วตัดทิ้ง
-| ทางเลือก | ตัดทิ้งเพราะ |
+## Alternatives considered and rejected
+| Alternative | Rejected because |
 |---|---|
 ```
 
-**หัวข้อที่สองสำคัญกว่าที่คนคิด** — มันคือสิ่งที่กันไม่ให้คนเสนอของเดิมซ้ำอีกหกเดือนต่อมา
-และมันคือส่วนที่บอกว่าคนเขียนเข้าใจ trade-off จริงหรือแค่ใส่ทุกอย่างที่ชอบ
+The second section matters more than people think. It stops someone proposing the same thing six months later, and it shows whether the author understood the trade-off or listed everything they liked. When research rejects something, it goes in this table with the reason.
 
-**เวลาตัดอะไรทิ้งเพราะ research** ให้เขียนลงตารางนี้ด้วยพร้อมเหตุผล
+## 9. Done means
 
----
-
-## 9. เกณฑ์ตรวจก่อนบอกว่าเสร็จ
-
-| | ตรวจอะไร |
+| | Check |
 |---|---|
-| 1 | **ลิงก์เสีย 0** ทั้งลิงก์ไฟล์และลิงก์หัวข้อ |
-| 2 | **frontmatter ตรงกับจำนวน marker จริง** ทุกไฟล์ที่แตะ |
-| 3 | 🔴 **ของใหม่ไม่ทำให้ประโยคไหนในไฟล์เก่ากลายเป็นเท็จ** — ค้นคำปฏิเสธของมันแล้ว |
-| 4 | 🔴 **กฎที่เพิ่งเขียนไม่มีอยู่ที่อื่นแล้ว** — หรือถ้ามี เลือกบ้านหลักแล้ว |
-| 5 | **ตัวเลขทุกตัวติดป้าย** `[ตัวเลขตั้งต้น]` |
-| 6 | **มีหัวข้อ "ทางเลือกที่ตัดทิ้ง"** พร้อมเหตุผลจริง |
-| 7 | **ไฟล์ดัชนี · แผนผัง · กระดานงาน อัปเดตตามแล้ว** ถ้าจำนวนหรือโครงเปลี่ยน |
+| 1 | **Zero broken links**, file links and heading links |
+| 2 | **Front matter matches the real marker count** in every touched file |
+| 3 | **Nothing new makes a sentence in an old file false.** Its negation was searched. |
+| 4 | **The rule just written exists nowhere else**, or a home was chosen |
+| 5 | **Every number is tagged** `[PROVISIONAL: ...]` or justified |
+| 6 | **"Alternatives considered and rejected" exists** with real reasons |
+| 7 | **Index, map and task board updated** if a count or the layout changed |
 
----
+## 10. Forbidden in Phase B
 
-## 10. ⚠️ สิ่งที่ห้ามทำในเฟส B
-
-| ห้าม | เพราะ |
+| Never | Because |
 |---|---|
-| **ยัดโครงไฟล์มาตรฐานทับโครงที่เขาใช้อยู่** | ได้ชื่อไฟล์ที่ถูกแลกกับลิงก์ที่พังทั้งคลัง |
-| **บีบไฟล์ทะเบียนให้สั้นเข้าเกณฑ์ 1–3 หน้า** | ทะเบียนยาวเพราะมีของเยอะ **การบีบคือการทิ้งข้อมูล** |
-| **ตัดสินใจแทนเจ้าของเพราะ "มันชัดอยู่แล้ว"** | ของที่ชัดสำหรับคนอ่านเอกสาร อาจขัดกับเหตุผลที่เขาไม่ได้เขียนไว้ |
-| **แก้ของเก่าเงียบ ๆ ระหว่างเขียนของใหม่** | เจ้าของจะไม่รู้ว่าอะไรเปลี่ยน — **แก้ได้ แต่ต้องรายงานทุกจุด** |
-| **สร้างไฟล์ใหม่เพราะไฟล์เดิม "ไม่ตอบโจทย์"** | ก่อนสร้างใหม่ **นับก่อนว่ามีกี่ไฟล์ลิงก์มาหามัน** — ส่วนใหญ่คำตอบคือแก้ ไม่ใช่สร้าง |
+| **Force the standard layout over the one in use** | Right file names in exchange for a vault of broken links |
+| **Compress a registry file to fit the 1 to 3 page rule** | A registry is long because it holds many things. Compressing it deletes data. |
+| **Decide for the owner because "it is obvious"** | Obvious to a reader of the document may contradict a reason the owner never wrote down |
+| **Edit old text quietly while writing new text** | The owner will not know what changed. Editing is allowed; every edit is reported. |
+| **Create a new file because the old one "does not fit"** | Count the inbound links first. The answer is almost always edit, not create. |

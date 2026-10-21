@@ -1,167 +1,91 @@
 ---
 name: quincymp-gdd
-description: |
-  เขียนเอกสารออกแบบเกม (GDD) ที่ขายหรือส่งต่อให้คนอื่นพัฒนาต่อได้จริง — vision, core loop,
-  world design, progression, combat, economy พร้อมตัวเลขและตาราง, endgame, monetization,
-  scope, risk และชุด pitch สำหรับพับลิชเชอร์ ผู้ซื้อ IP หรือผู้ร่วมทีม เชี่ยวชาญ MMORPG และ
-  open world ทุกขนาดทีม ตั้งแต่ทีมเล็กถึงสตูดิโอระดับองค์กรที่ทำเกม AAA ผลลัพธ์เป็นไฟล์ Markdown อธิบายไทย ชื่อของทุกอย่างเป็นอังกฤษ
-  Use whenever the user wants to design a game, write or audit a GDD, define a core loop,
-  balance an in-game economy, plan progression or endgame, spec a world/map, scope a game
-  project, or pitch/sell a game concept — including bare phrases like "อยากทำเกม",
-  "ช่วยคิดระบบเกม", "ออกแบบเกมแนว", "จะทำ MMO", "คิดระบบ crafting", "บาลานซ์ดาเมจ",
-  "เขียน GDD", "ขายไอเดียเกม". Not for engine/gameplay code or engine selection —
-  this skill stops at the design.
+description: Write and maintain game design documents that record decisions, not dreams. Use when the user wants to design a game, write or audit a GDD, define a core loop, balance an in-game economy, design classes or skills, size an open world, plan progression or endgame, scope a project, or pitch a game to a publisher, buyer or co-founder. Strongest for MMORPG and open-world design, usable for any genre. Not for engine choice or gameplay code; this skill stops at the design.
 ---
 
-> ## ขนาดทีมเป็นข้อมูลที่โปรเจกต์บอก ไม่ใช่ค่าตั้งต้น
-> อ่านขนาดทีมจากโปรเจกต์ (เช่น CLAUDE.md หรือ decision ของโปรเจกต์) ก่อนใช้คำแนะนำใด ๆ ที่พูดถึง "ทีมเล็ก" หรือ "นักพัฒนาเดี่ยว" ใน references
-> - ถ้าโปรเจกต์ประกาศว่าเป็นทีมระดับองค์กร/AAA (เช่น ระบุไว้ใน CLAUDE.md หรือไฟล์ decision ของโปรเจกต์) **ห้ามใช้ขนาดทีมเป็นเหตุผลตัดไอเดียในเอกสาร concept** · คำแนะนำแบบทีมเล็กเป็นทางเลือก ไม่ใช่ข้อจำกัด
-> - ข้อจำกัดการผลิต (เวลา ต้นทุน คน) อยู่ในไฟล์ scope ของโปรเจกต์เท่านั้น
+# Game design doc
 
-# เขียนเอกสารออกแบบเกมที่ส่งต่อได้
+A design document is a record of decisions, not a description of dreams. Every section answers four questions: **what was decided, why, which alternatives were rejected, and what the numbers are**. A section that cannot answer all four is not designed yet. Write `[UNDECIDED: <the question to answer>]` in its place instead of covering the gap with prose. A declared gap earns more trust from a professional reader than false confidence, and a reader who buys designs spots the difference on page two.
 
-## หลักการเดียวที่ทุกอย่างในสกิลนี้ยึด
+Compare:
 
-**เอกสารออกแบบคือบันทึกการตัดสินใจ ไม่ใช่คำบรรยายความฝัน**
-
-ความต่างนี้ชี้ขาดว่าเอกสารจะขายได้หรือกลายเป็นขยะ เปรียบเทียบ:
-
-> ❌ "โลกของเกมกว้างใหญ่ไพศาล มีสภาพอากาศเปลี่ยนแปลงแบบไดนามิก ผู้เล่นสำรวจได้อย่างอิสระ"
+> Rejected: "The world is vast, with dynamic weather, and players explore freely."
 >
-> ✅ "โลกขนาด 6 km² เดินข้ามด้วยความเร็ว 4.5 m/s ใช้เวลา 9 นาที มี point of interest ทุก ๆ
-> 40–60 วินาทีของการเดินทาง — เลือกขนาดนี้เพราะทีม 1 คนทำ landmark ด้วยมือได้ 40 จุดใน 8 เดือน
-> ตัดขนาด 25 km² ทิ้งเพราะจะเหลือ landmark ทุก 4 นาที ซึ่งทำให้โลกรู้สึกว่าง"
+> Accepted: "The world is 6 km². At 4.5 m/s a player crosses it in 9 minutes and meets a point of interest every 40 to 60 seconds of travel. This size was chosen because one person can hand-build 40 landmarks in 8 months. A 25 km² world was rejected: it leaves a landmark every 4 minutes, which reads as empty."
 
-ทุกหัวข้อในเอกสารต้องตอบ 4 อย่าง: **ตัดสินใจว่าอะไร / เพราะอะไร / ตัดทางเลือกไหนทิ้ง / ตัวเลขเท่าไร**
-หัวข้อไหนตอบไม่ได้ทั้ง 4 ข้อ แปลว่ายังไม่ได้ออกแบบ แค่เพ้อถึงมันอยู่ — ให้เขียนกำกับไว้ตรง ๆ ว่า
-`[ยังไม่ตัดสินใจ: <คำถามที่ต้องตอบ>]` แทนที่จะเขียนภาษาสวย ๆ กลบไว้ ผู้ซื้อมืออาชีพจับได้ทันที
-และช่องว่างที่ประกาศตัวเองสร้างความน่าเชื่อถือมากกว่าความมั่นใจปลอม ๆ
+## Start
 
-## ก่อนอื่น: งานนี้อยู่เฟสไหน
+Decide the phase first. Then open a todolist with one entry per step of that phase and work it in order.
 
-สกิลนี้ครอบสองงานที่ใช้กติกาคนละชุด **ดูก่อนว่ากำลังทำอันไหน แล้วค่อยอ่านต่อ**
-
-| | **เฟส A — เริ่มจากศูนย์** | **เฟส B — ต่อยอดของที่มีอยู่** |
+| | Phase A: starting from zero | Phase B: extending an existing vault |
 |---|---|---|
-| **สัญญาณ** | ยังไม่มีโฟลเดอร์เอกสาร หรือมีไม่ถึง 5 ไฟล์ | มีเอกสารหลายสิบไฟล์ที่ลิงก์ถึงกันแล้ว |
-| **งานหลัก** | **ตัดสินใจเรื่องใหญ่ให้จบ** — core loop, The One Thing, scope | **ลงลึกรายระบบโดยไม่ทำให้ของเดิมกลายเป็นเท็จ** |
-| **ความเสี่ยงที่ต้องกลัว** | เขียนสวยแต่ไม่ได้ตัดสินใจ | 🔴 **เพิ่มของใหม่ทับของเก่า โดยไม่มีใครรู้ว่ามันขัดกัน** |
-| **อ่านต่อที่** | 🔴 **`references/phase-a-bootstrap.md`** *(ล็อก 5 ข้อ · ชุดเอกสาร · ข้อจำกัดที่ต้องบอกครั้งเดียว)* | 🔴 **`references/living-vault.md` ก่อนแตะไฟล์ใด ๆ** |
+| Signal | No design folder, or fewer than 5 files | Dozens of files that already link to each other |
+| Job | Settle the big decisions: core loop, The One Thing, scope | Go deep per system without making an old file false |
+| Risk | Beautiful prose with no decisions | A new decision that contradicts one already made |
+| Read | [`references/bootstrap.md`](references/bootstrap.md) | [`references/living-vault.md`](references/living-vault.md) before touching any file |
 
-⚠️ **เฟส B ห้ามเอาโครงไฟล์มาตรฐานไปยัดใส่โปรเจกต์ที่เรียงของตัวเองไว้แล้ว**
-โครงที่ใช้อยู่จริงและมีลิงก์ถึงกัน **ดีกว่าโครงมาตรฐานที่ต้องรื้อ 80 ไฟล์เพื่อให้ตรง**
-ห้าข้อใน `references/phase-a-bootstrap.md` ยังต้องตอบได้อยู่ **แต่ถ้าโปรเจกต์ตอบไปแล้ว อย่าถามซ้ำ — ไปอ่านว่าตอบว่าอะไร**
+In Phase B never impose the standard file layout on a project that already has its own. A layout that is in use and fully linked beats a standard one that needs 80 files rewritten to match. The five locks in `bootstrap.md` still have to be answerable, but if the project already answered them, read the answers instead of asking again.
 
-## กติกาการเขียน
+## Rules for every file
 
-**ภาษา** — คำอธิบายเป็นภาษาไทย แต่ **ชื่อของทุกสิ่งในเกมเป็นภาษาอังกฤษ**
+**Names.** Prose in the team's working language. Every name of a thing in the game in English: stats, classes, jobs, currencies, systems, titles, items, gods, places. Those names get typed into code, databases and UI, so the document must use the names the code will use. Never coin a native-language word for an in-game thing. It reads well, nobody types it into a codebase, and it translates back three different ways until the team calls one thing by three names. Introduce a name once with a translation in parentheses, then use the English name alone: "**Glory** (honor) is the second currency", and from then on just `Glory`. Keep a `GLOSSARY.md` from the first file, English names first, explanations second, and update it whenever a name is created.
 
-ไม่ใช่แค่ศัพท์วงการ (core loop, tick rate, sink, TTK, spawn) แต่รวมถึง
-**ทุกอย่างที่เป็นชื่อเฉพาะของเกมนั้นด้วย** — ชื่อค่าสถานะ ชื่อคลาส ชื่ออาชีพ ชื่อเทพ
-ชื่อสกุลเงิน ชื่อระบบ ชื่อตำแหน่ง ชื่อไอเทม
+**Numbers.** Every system carries at least one real number. An unknown number gets an estimate tagged `[PROVISIONAL: 1,500 g/hr]`. A declared estimate can be argued with and fixed; an omission cannot. Numbers a document may not skip: TTK, session length, income per hour, players visible in one area, hours to endgame.
 
-> **อย่าบัญญัติศัพท์ไทยขึ้นใหม่เพื่อเรียกของในเกม**
-> คำอย่าง "ความแม่นมือ" "ชั้นวิชา" "มาตรวัดประจำสาย" "ประมุขสาย" อ่านแล้วสวย
-> แต่มันเป็นคำที่ไม่มีอยู่จริงในวงการ ไม่มีใครพิมพ์ลงโค้ด ไม่มีใครพูดในที่ประชุม
-> และแปลกลับเป็นอังกฤษได้หลายแบบจนทีมเรียกของชิ้นเดียวกันคนละชื่อ
+**Tables.** A table a human reads to understand a decision (comparing options, summarising rules) stays in the document, because a reader should not open two files to understand one thing. A table a machine imports (xp curve, drop rates, prices, per-item stats, dozens of rows) lives in `data/*.csv`. Do not create `data/` before real numbers exist; an empty folder waiting for numbers is debt, not structure.
 
-เหตุผล: คนที่รับเอกสารไปทำต่อจะพิมพ์ชื่อเหล่านี้ลงในโค้ด ฐานข้อมูล และ UI
-**ชื่อในเอกสารต้องเป็นชื่อเดียวกับที่จะอยู่ในโค้ด** ไม่งั้นทุกคนต้องแปลในหัวตลอดเวลา
-และเอกสารจะขายให้ทีมต่างชาติไม่ได้เลย
+**Length.** Measure decision density, not pages. Concept files (vision, core loops, one-pager) run 1 to 3 pages and are read in one sitting; longer means a choice has not been made. Registry files (classes, gods, stats, items) run as long as the list; a 27-job registry at 1,000 lines is correct, and shortening it deletes data. Rules files may be long but open with a "where to start" box. The test: read 10 random lines from the middle of a file; if none is a decision, that file is description. Fear repetition, not length. A rule that appears in three files gets one home and two links (see `living-vault.md`).
 
-**วิธีเขียน:** ใช้อังกฤษเป็นชื่อหลัก ใส่ไทยในวงเล็บได้ครั้งแรกที่พูดถึง แล้วใช้อังกฤษล้วนหลังจากนั้น
-เช่น *"**Glory** (เกียรติยศ) เป็นสกุลเงินที่สอง"* → ย่อหน้าถัดไปใช้ `Glory` เฉย ๆ
+**Design before production.** Design files hold game numbers: world size, TTK, drop rate, concurrency. Production constraints (time, cost, head count, technical feasibility) live in one place, the scope file (`12-scope-roadmap.md` in the standard layout, or whatever the project calls it), and the user is told where they were recorded. An idea cut for "no time" before it was finished was never evaluated. Scope can shrink on any day; the right concept is found once, at the start.
 
-**ต้องมี `GLOSSARY.md`** ที่รวมชื่อทั้งหมดไว้ที่เดียว อังกฤษเป็นหลัก ไทยเป็นคำอธิบาย
-— สร้างตั้งแต่ไฟล์แรก และอัปเดตทุกครั้งที่ตั้งชื่อของใหม่
+**Team size is project data, not a default.** Read it from the project (its `CLAUDE.md`, a decision record, the scope file) before applying any "small team" advice in the references. If the project declares an enterprise or AAA team, team size is never a reason to cut an idea in a concept file, and the small-team advice is an option, not a limit.
 
-**ตัวเลข** — ทุกระบบต้องมีตัวเลขจริงอย่างน้อยหนึ่งตัว ถ้ายังไม่รู้ให้ประมาณแล้วติดป้าย
-`[ตัวเลขตั้งต้น ต้องทดสอบ]` การประมาณที่ประกาศตัวว่าเป็นการประมาณมีค่ากว่าการเลี่ยงไม่พูดถึง
-เพราะมันทำให้คนอื่นถกเถียงและแก้ได้ ตัวเลขที่ขาดไม่ได้: TTK, เวลาต่อ session,
-รายได้ต่อชั่วโมง, จำนวนผู้เล่นที่เห็นพร้อมกันในพื้นที่เดียว, จำนวนชั่วโมงถึง endgame
+**Rejections.** Every file ends with a section "Alternatives considered and rejected" with a reason per row. It is what separates a designer from a dreamer, and the section a professional buyer reads first, because it shows whether the author understands trade-offs or listed everything they like.
 
-**ตาราง** — ตารางที่**คนอ่าน**อยู่ในเอกสาร · ตารางที่**เครื่องอ่าน**แยกเป็นไฟล์ข้อมูล
+## Amateur signals in an MMORPG document
 
-| ตารางแบบไหน | เก็บที่ไหน |
-|---|---|
-| อ่านเพื่อเข้าใจการตัดสินใจ — เทียบทางเลือก · สรุปกฎ · จุดเด่นของแต่ละอย่าง | **ในเอกสาร** — แยกออกไปแล้วคนอ่านต้องเปิดสองที่เพื่อเข้าใจเรื่องเดียว |
-| ตัวเลขหลายสิบแถวที่จะถูก import เข้า engine — xp curve · drop rate · ราคา · stat รายไอเทม | **`data/*.csv`** |
+None of these is banned. Each is a default everybody writes, so including one without a reason announces that the section is not designed yet. When the user proposes one, do not refuse it. Ask the question in the right column and write the answer into the document. The answer is the design.
 
-⚠️ **อย่าสร้าง `data/` ไว้ก่อนที่จะมีตัวเลขจริง** — โฟลเดอร์ว่างที่รอตัวเลขมาเติมคือหนี้ ไม่ใช่โครงสร้าง
-
-**ความยาว** — วัดที่**ความแน่นของการตัดสินใจ ไม่ใช่จำนวนหน้า**
-
-> **ทดสอบ: สุ่มอ่าน 10 บรรทัดจากกลางไฟล์ ถ้าไม่เจอการตัดสินใจสักข้อ นั่นคือการบรรยาย**
-
-| ชนิดไฟล์ | ความยาวที่เหมาะ |
-|---|---|
-| **ไฟล์แนวคิด** — vision, core loop, one-pager | **1–3 หน้า** — ต้องอ่านจบในนั่งเดียว **ยาวกว่านี้แปลว่ายังไม่ได้เลือก** |
-| **ไฟล์ทะเบียน** — รายการอาชีพ คลาส เทพ ค่าสถานะ ไอเทม | **ยาวตามจำนวนรายการ** — ทะเบียน 27 อาชีพยาว 1,000 บรรทัดคือถูกแล้ว **การบีบให้สั้นคือการทิ้งข้อมูล** |
-| **ไฟล์กติกา** — มาตรฐานที่ไฟล์อื่นต้องทำตาม | **ยาวได้ แต่ต้องมีกล่อง "เริ่มอ่านที่ไหน" บนหัวไฟล์** |
-
-🔴 **สิ่งที่ต้องกลัวไม่ใช่ไฟล์ยาว แต่คือไฟล์ที่ยาวเพราะอธิบายสิ่งเดียวกันซ้ำ**
-ถ้ากฎข้อเดียวปรากฏใน 3 ไฟล์ **ให้เลือกบ้านหลักหนึ่งที่ แล้วที่เหลือลิงก์ไปหา** — วิธีตรวจอยู่ที่ `references/living-vault.md`
-
-**แยกเฟสคิดออกจากเฟสสร้าง** — ตอนกำลังออกแบบ ห้ามเอาข้อจำกัดเรื่องเวลา ต้นทุน
-ขนาดทีม หรือความเป็นไปได้ทางเทคนิคมาปนในไฟล์ออกแบบ ให้เขียนรวมไว้ที่ไฟล์ scope ของโปรเจกต์
-*(`12-scope-roadmap.md` ในโครงมาตรฐาน — ถ้าโปรเจกต์ใช้ชื่ออื่น ใช้ของเขา)* ไฟล์เดียวแทน แล้วบอกผู้ใช้ว่าบันทึกไว้ที่ไหน
-
-เหตุผลที่สำคัญ: ไอเดียที่ถูกตัดตั้งแต่ยังคิดไม่จบเพราะ "ทำไม่ทัน" คือไอเดียที่ไม่เคยถูกประเมินจริง
-งานออกแบบต้องหาให้ได้ก่อนว่า**สิ่งที่ถูกต้องคืออะไร** แล้วค่อยตัดสินใจว่าจะทำเท่าไร
-การย่อ scope ทำได้เร็วและทำได้ตลอดเวลา ส่วนการคิด concept ที่ถูกต้องทำได้ครั้งเดียวตอนต้น
-
-ข้อนี้ไม่ขัดกับกติกาเรื่องตัวเลข — ตัวเลขที่ต้องมีคือตัวเลขของ*ตัวเกม* (ขนาดโลก TTK
-อัตราดรอป จำนวนผู้เล่น) ไม่ใช่ตัวเลขของ*การผลิต* (กี่วันต่อ asset กี่คนกี่เดือน)
-
-**สิ่งที่ตัดทิ้ง** — ทุกไฟล์จบด้วยหัวข้อ "ทางเลือกที่พิจารณาแล้วตัดทิ้ง" พร้อมเหตุผล
-นี่คือส่วนที่แยกดีไซเนอร์ออกจากคนเพ้อ และเป็นส่วนที่ผู้ซื้อมืออาชีพอ่านก่อนเสมอ
-เพราะมันบอกว่าคนเขียนเข้าใจ trade-off หรือแค่ใส่ทุกอย่างที่ชอบลงไป
-
-## สิ่งที่ทำให้เอกสาร MMORPG ดูสมัครเล่นทันที
-
-รายการนี้ไม่ใช่ข้อห้าม แต่คือสิ่งที่**ถ้าจะใส่ต้องมีเหตุผลกำกับ** เพราะมันคือค่าตั้งต้นที่
-ทุกคนเขียนเหมือนกันหมด และการใส่มาโดยไม่มีเหตุผลเท่ากับประกาศว่ายังไม่ได้ออกแบบ:
-
-| สิ่งที่เจอบ่อย | ทำไมถึงเป็นสัญญาณอันตราย | ถามกลับว่า |
+| Proposal | Why it is a warning sign | Ask |
 |---|---|---|
-| คลาส warrior/mage/rogue/healer | คลาสควรมาจาก fantasy ของผู้เล่น ไม่ใช่ลอกแม่แบบ | คลาสนี้ให้ผู้เล่น*รู้สึก*เป็นใคร และตัดสินใจอะไรที่คลาสอื่นทำไม่ได้ |
-| เอลฟ์ คนแคระ ออร์ค | ไม่ผิด แต่ไม่ได้ให้อะไรฟรี ๆ | เผ่าเปลี่ยน**การเล่น**อย่างไร ถ้าเปลี่ยนแค่หน้าตา ตัดทิ้งเถอะ |
-| "โลกกว้างใหญ่" ไม่มีตัวเลข | ขนาดโลกคือข้อจำกัดการผลิต ไม่ใช่คำโฆษณา | กี่ตารางกิโลเมตร ใครทำ ใช้เวลาเท่าไร |
-| crafting = รวมวัตถุดิบแล้วกดปุ่ม | เป็นแรงงาน ไม่ใช่เกม | ผู้เล่นตัดสินใจอะไรระหว่าง craft และสองคนที่ craft ของชิ้นเดียวกันได้ผลต่างกันไหม |
-| เลเวล 1–60 แล้วตีบอสซ้ำ | ต้องมีโรงงานผลิตเนื้อหาป้อนตลอด — ถามว่าทีมมีหรือจะสร้างไหม | ทีมขนาดนี้ผลิตเนื้อหาได้เดือนละเท่าไร และ endgame กินเนื้อหาเดือนละเท่าไร |
-| "AI ขับเคลื่อน NPC ให้มีชีวิต" | เป็นคำโฆษณาจนกว่าจะระบุว่าตัดสินใจอะไร | NPC ตัดสินใจอะไรได้บ้าง ผู้เล่นสังเกตเห็นได้อย่างไรใน 5 นาทีแรก |
-| "เศรษฐกิจขับเคลื่อนโดยผู้เล่น" | พังง่ายที่สุดในบรรดาระบบ MMO | เงินเข้าจากไหน ออกทางไหน อัตราเท่าไร ถ้าบอทเข้ามาจะเกิดอะไร |
-| ระบบ PvP + PvE + crafting + housing + pet ครบ | ใส่ทุกอย่าง = ไม่ได้เลือก | ถ้าเหลือระบบเดียว เก็บอันไหน และอีกอันจะมาตอนไหน |
+| Warrior, mage, rogue, healer | Classes come from the player's fantasy, not from a template | Who does this class let the player *feel* like, and what decision does it make that no other class can? |
+| Elves, dwarves, orcs | Not wrong, but free of content | How does the race change *play*? If only looks, cut it. |
+| "A vast world" with no number | World size is a production constraint, not a slogan | How many km², built by whom, in how long? |
+| Crafting as "combine materials, press button" | Labor, not a game | What does the player decide mid-craft, and do two players crafting the same item get different results? |
+| Level 1 to 60, then repeat bosses | Needs a content factory feeding it forever | How much content can this team ship per month, and how much does endgame consume per month? |
+| "AI-driven living NPCs" | Marketing until the decisions are named | What does an NPC decide, and how does a player notice within 5 minutes? |
+| "Player-driven economy" | The system that breaks most easily | Where does money enter, where does it leave, at what rates, and what happens when bots arrive? |
+| PvP, PvE, crafting, housing and pets, all of it | Everything means nothing was chosen | If one system had to survive, which one, and when does the next one arrive? |
 
-เวลาผู้ใช้เสนอสิ่งเหล่านี้ อย่าปฏิเสธ — ให้ถามคำถามในคอลัมน์ขวา แล้วเขียนคำตอบเขาลงเอกสาร
-คำตอบนั่นแหละคือ design ส่วนที่คิดมาแล้วจริง
+## References
 
-## เอกสารอ้างอิง — อ่านเมื่อถึงหัวข้อนั้น
+Read the file that matches the section being written. Do not read them all at once.
 
-อย่าอ่านทั้งหมดรวดเดียว โหลดเฉพาะไฟล์ที่ตรงกับสิ่งที่กำลังเขียน:
-
-| ไฟล์ | อ่านเมื่อ |
+| Read | When |
 |---|---|
-| 🔴 **`references/phase-a-bootstrap.md`** | 🔴 **เฟส A เท่านั้น — โปรเจกต์ที่ยังไม่มีเอกสาร หรือมีไม่ถึง 5 ไฟล์** · ห้าข้อที่ต้องล็อกก่อนเขียน · ชุดเอกสารที่ผลิตพร้อมสคริปต์ตั้งโครง · ข้อจำกัดของแนว MMORPG ที่ต้องบอกผู้ใช้ครั้งเดียว — **เฟส B ข้ามไฟล์นี้ทั้งไฟล์** |
-| `references/gdd-structure.md` | เริ่มเอกสารใหม่ หรือไม่แน่ใจว่าหัวข้อไหนควรมีอะไร — มีโครงรายหัวข้อพร้อมคำถามนำ |
-| `references/mmo-systems.md` | เขียนไฟล์ 04–09 — server topology, progression, social, endgame, monetization พร้อมกับดักเฉพาะแนว MMO |
-| `references/open-world.md` | เขียนไฟล์ 03 — ขนาดโลก ความหนาแน่น traversal การแบ่งโซน วิธีทำโลกใหญ่ให้คุ้ม (มุมทีมเล็กอยู่ในไฟล์) |
-| `references/economy-math.md` | เขียนไฟล์ 06 หรือทำตารางใด ๆ ใน `data/` — สูตรจริงสำหรับ faucet/sink, drop rate, xp curve, เงินเฟ้อ |
-| 🔴 **`references/living-vault.md`** | 🔴 **ทุกครั้งที่แตะโปรเจกต์ที่มีเอกสารอยู่แล้ว (เฟส B)** — บ้านหลักแห่งเดียว · marker ที่เครื่องอ่านได้ · ตรวจลิงก์ · ตรวจความขัดแย้ง · ข้อความที่ตายแล้วแต่ยังมีคนอ้าง |
-| 🔴 **`references/class-and-skill-design.md`** | เขียนคลาส อาชีพ สกิล หรือความสามารถใด ๆ ที่ผู้เล่นเลือกได้ — เกณฑ์ผ่าน 5 ข้อ · ข้อห้าม 9 ข้อ · research 4 ช่อง · คลังสกิลกับช่องติดตั้ง · เส้นแบ่งระหว่างคลาสที่ใกล้กัน |
-| `references/selling-the-design.md` | เขียน `pitch/` หรือผู้ใช้ถามเรื่องขาย ลิขสิทธิ์ การเอาไปเสนอ — รวมถึงสิ่งที่ขายได้จริงกับสิ่งที่ขายไม่ออก |
+| [`references/bootstrap.md`](references/bootstrap.md) | Phase A only. The five locks, the question rounds, the document set and scaffold, the constraint talk. Phase B skips this file. |
+| [`references/document-structure.md`](references/document-structure.md) | Starting any standard file, or unsure what a section must contain. Per-file requirements and the questions to ask. |
+| [`references/living-vault.md`](references/living-vault.md) | Phase B, before touching any file. Single home, machine-readable markers, link checks, contradiction hunting, boundary tables, renames. |
+| [`references/classes-and-skills.md`](references/classes-and-skills.md) | Any ability the player chooses: classes, jobs, build paths, skills, perks. The verb count, the five criteria, the nine prohibitions, the four research shelves, slots versus library. |
+| [`references/economy.md`](references/economy.md) | File 06, file 04, or any table in `data/`. Faucet and sink, drop rate and pity, xp curves, power ratios, market liquidity, time as currency. |
+| [`references/world.md`](references/world.md) | File 03, or any talk of world size, maps, exploration, travel. |
+| [`references/mmo-systems.md`](references/mmo-systems.md) | Files 04 to 09 in an MMO. Server topology, concurrency, progression, social glue, endgame consumption, anti-cheat, onboarding. |
+| [`references/pitch.md`](references/pitch.md) | Any file under `pitch/`, or the user asks about selling, publishers, rights. |
 
-## ตรวจงานก่อนส่งมอบ
+## Delivery checklist
 
-ก่อนบอกผู้ใช้ว่าเอกสารเสร็จ ไล่เช็กห้าข้อนี้ เจอข้อไหนไม่ผ่านให้แก้ก่อน:
+Before reporting a document done, run every test. Fix the failures first.
 
-1. **ทดสอบคนแปลกหน้า** — คนที่ไม่เคยคุยกับผู้ใช้ อ่านไฟล์หน้าเดียวของโปรเจกต์ *(`00-one-pager.md` ในโครงมาตรฐาน)* จบแล้วอธิบายเกมให้เพื่อนฟังถูกไหม
-2. **ทดสอบโปรแกรมเมอร์** — มีตัวเลขพอให้เริ่มเขียนโค้ดระบบใดระบบหนึ่งได้โดยไม่ต้องถามกลับไหม
-3. **ทดสอบจุดต่าง** — ถ้าลบชื่อเกมออก คนอ่านแยกออกจาก MMO ทั่วไปได้ไหม
-4. **ทดสอบการตัด** — มีหัวข้อ "ตัดทิ้งเพราะ___" อยู่จริงทุกไฟล์ไหม
-5. **ทดสอบความซื่อสัตย์** — ช่องที่ยังไม่รู้ ถูกทำเครื่องหมายไว้ หรือถูกกลบด้วยภาษาสวย ๆ
+1. **Stranger test.** Someone who never spoke to the user reads the one-pager (`00-one-pager.md` in the standard layout) and can explain the game to a friend correctly.
+2. **Programmer test.** There are enough numbers to start coding at least one system without asking a question.
+3. **Distinctiveness test.** With the title removed, a reader can still tell this apart from a generic MMO.
+4. **Rejection test.** Every file has a real "Alternatives considered and rejected" section with reasons.
+5. **Honesty test.** Every unknown is marked `[UNDECIDED: ...]` or `[PROVISIONAL: ...]`, not covered with prose.
+6. **Contradiction test** (Phase B). Nothing just written makes a sentence in an older file false. If it does, fix the source, never leave two files disagreeing.
+7. **Single-home test** (Phase B). The rule just written does not already exist elsewhere; if it does, one home was chosen and the rest link to it.
 
-6. 🔴 **ทดสอบความขัดแย้ง** *(เฟส B)* — ของใหม่ที่เพิ่งเขียน **ทำให้ประโยคไหนในไฟล์เก่ากลายเป็นเท็จหรือเปล่า** ถ้าใช่ ต้องไปแก้ต้นทาง ไม่ใช่ปล่อยให้สองไฟล์พูดคนละอย่าง
-7. 🔴 **ทดสอบบ้านหลัก** — กฎที่เพิ่งเขียน **มีอยู่ที่อื่นแล้วไหม** ถ้ามี ให้เลือกบ้านหลักหนึ่งที่ แล้วที่เหลือลิงก์ไปหา
+Test 5 matters most in Phase A. Test 6 matters most in Phase B. A document that admits what it does not know is one people dare to build on; a document that contradicts itself is one nobody trusts anywhere.
 
-ข้อ 5 สำคัญที่สุดในเฟส A · **ข้อ 6 สำคัญที่สุดในเฟส B** — เอกสารที่ยอมรับว่ายังไม่รู้อะไรบ้างคือเอกสารที่คนกล้าเอาไปสร้างต่อ **ส่วนเอกสารที่ขัดกันเองคือเอกสารที่ไม่มีใครกล้าเชื่อข้อไหนเลย**
+## Final response
+
+Report the decisions made, the count of `[UNDECIDED]` markers per file, and in Phase B every sentence in an older file that was changed and why. Do not restate the document.

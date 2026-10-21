@@ -1,27 +1,26 @@
-# รายการ issue ที่จะเปิดหลัง push (good first issue)
+# Issues to open after publishing
 
-> ไฟล์นี้เป็นร่างสำหรับเจ้าของ repo ใช้สร้าง issue บน GitHub ลบได้เมื่อสร้างครบ
+A draft for the maintainer. Delete this file once the issues exist on GitHub.
 
-| # | หัวข้อ | ป้าย | รายละเอียดสั้น |
+| # | Title | Labels | Summary |
 |---|---|---|---|
-| 1 | README ภาษาอังกฤษฉบับเต็ม | `documentation` `good first issue` | แปล README.md เป็น `README.en.md` ให้ครบทุกหัวข้อ |
-| 2 | เพิ่ม reference แนว roguelike / roguelite | `enhancement` `good first issue` | `references/roguelike.md`: run structure, meta-progression, seed, ตัวเลข run length |
-| 3 | เพิ่ม reference แนว survival / crafting | `enhancement` `good first issue` | hunger/thirst tick, base building, ตารางวัตถุดิบ |
-| 4 | เพิ่ม reference แนว gacha / live service mobile | `enhancement` `good first issue` | pity, banner cadence, ARPU, อะไรขายได้ไม่ได้ |
-| 5 | เพิ่ม reference แนว card battler / deckbuilder | `enhancement` `good first issue` | deck size, mana curve, rarity distribution |
-| 6 | เพิ่ม reference แนว 4X / grand strategy | `enhancement` | turn economy, snowball control, victory conditions |
-| 7 | scaffold: option `--lang en` ให้หัวข้อเป็นอังกฤษ | `enhancement` `good first issue` | เพิ่ม dict หัวข้อภาษาอังกฤษใน `scripts/scaffold_gdd.py` |
-| 8 | scaffold: option `--genre` เลือกชุดไฟล์ | `enhancement` | เช่น `--genre roguelike` สร้างเฉพาะไฟล์ที่แนวนั้นต้องการ |
-| 9 | ตัวอย่าง GDD จริงใน `examples/` | `help wanted` | เกมสมมติ 1 เกม เขียนครบ 14 ไฟล์ตามกติกา |
-| 10 | unit test สำหรับ scaffold_gdd.py | `good first issue` | ทดสอบ: ไม่เขียนทับ, `--only` กรองถูก, CSV header ครบ |
-| 11 | ตรวจสูตรใน economy-math.md กับแหล่งอ้างอิงจริง | `documentation` | เทียบกับ postmortem / GDC talk แล้วใส่ลิงก์อ้างอิง |
-| 12 | GitHub Action: รัน scaffold smoke test ทุก PR | `ci` `good first issue` | workflow เรียก `python scripts/scaffold_gdd.py /tmp/x --title T` |
-| 13 | แปล SKILL.md เป็นอังกฤษใน `i18n/en/` | `documentation` `help wanted` | สำหรับทีมต่างชาติที่อยากใช้กติกาเดียวกัน |
-| 14 | checklist "ตรวจงานก่อนส่งมอบ" เป็นไฟล์แยกให้ copy ได้ | `good first issue` | `references/delivery-checklist.md` |
-| 15 | เพิ่มคำถามนำสำหรับเกม co-op 2 ถึง 4 คน ใน gdd-structure | `enhancement` | หัวข้อ 07 ปัจจุบันเน้น MMO อย่างเดียว |
+| 1 | Add a roguelike / roguelite reference | `enhancement` `good first issue` | `references/roguelike.md`: run structure, meta-progression, seeds, run-length numbers |
+| 2 | Add a survival / crafting reference | `enhancement` `good first issue` | Hunger and thirst ticks, base building, material tables |
+| 3 | Add a gacha / mobile live-service reference | `enhancement` `good first issue` | Pity, banner cadence, ARPU, what can and cannot be sold |
+| 4 | Add a card battler / deckbuilder reference | `enhancement` `good first issue` | Deck size, mana curve, rarity distribution |
+| 5 | Add a 4X / grand strategy reference | `enhancement` | Turn economy, snowball control, victory conditions |
+| 6 | Add questions for 2 to 4 player co-op to document-structure | `enhancement` | Section 07 currently assumes an MMO |
+| 7 | scaffold: `--genre` option | `enhancement` | For example `--genre roguelike` generates only the files that genre needs |
+| 8 | scaffold: unit tests | `good first issue` | Never overwrites, `--only` filters correctly, CSV headers complete, front matter count matches markers |
+| 9 | GitHub Action: scaffold smoke test on every PR | `ci` `good first issue` | A workflow that runs `python scripts/scaffold_gdd.py /tmp/x --title T` |
+| 10 | A worked example under `examples/` | `help wanted` | One invented game, all 14 files written by the rules |
+| 11 | Cite sources for the formulas in economy.md | `documentation` | Compare with postmortems and GDC talks, add links |
+| 12 | A link and marker checker script | `good first issue` | The checks described in living-vault.md as one runnable script |
+| 13 | Thai translation under `i18n/th/` | `documentation` `help wanted` | The skill was born in Thai; a maintained translation would serve that community |
+| 14 | A copyable delivery checklist file | `good first issue` | `references/delivery-checklist.md` mirroring the list in SKILL.md |
 
-## วิธีเปิด issue ให้คนอยากช่วย
+## Opening issues people want to pick up
 
-- ใส่ป้าย `good first issue` และ `hacktoberfest` ในเดือนตุลาคม
-- ระบุไฟล์ที่ต้องแตะ และ "ผลลัพธ์ที่ถือว่าเสร็จ" 1 ถึง 2 บรรทัด
-- ตอบ PR ภายใน 1 ถึง 2 วัน
+- Label `good first issue`, and `hacktoberfest` in October.
+- Name the file to touch and write "done means" in one or two lines.
+- Answer pull requests within a day or two.

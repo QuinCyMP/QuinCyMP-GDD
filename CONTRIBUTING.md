@@ -1,33 +1,31 @@
-# การมีส่วนร่วม / Contributing
+# Contributing
 
-ยินดีรับทุก PR ที่ทำให้เอกสารออกแบบเกมที่ได้จากสกิลนี้ "ตัดสินใจ" ได้ชัดขึ้น
 Pull requests that make the resulting design documents more decisive are welcome.
 
-## สิ่งที่รับ / What we accept
+## What is accepted
 
-| ประเภท | ตัวอย่าง |
+| Kind | Examples |
 |---|---|
-| แก้ reference ที่มีอยู่ | สูตรผิด ตัวเลขอ้างอิงล้าสมัย คำถามนำที่ยังไม่คม |
-| เพิ่มแนวเกมใหม่ | `references/<genre>.md` เช่น roguelike, survival, 4X, gacha, card battler |
-| แปล | README หรือ reference เป็นภาษาอื่น เก็บไว้ที่ `i18n/<lang>/` |
-| ปรับ `scripts/scaffold_gdd.py` | หัวข้อใหม่ ตาราง CSV ใหม่ ต้องไม่เขียนทับไฟล์ที่มีอยู่ |
-| ตัวอย่าง GDD จริง | ใส่ใน `examples/` ต้องเป็นผลงานที่คุณมีสิทธิ์เผยแพร่ |
+| Fixes to an existing reference | A wrong formula, a stale reference number, a leading question that is not sharp |
+| A new genre reference | `references/<genre>.md` for roguelike, survival, 4X, gacha, card battler |
+| Translations | `i18n/<lang>/` for the README or a reference |
+| Changes to `scripts/scaffold_gdd.py` | New sections or CSV tables; it must keep never overwriting an existing file |
+| Worked examples | A full document set for an invented game under `examples/`, if you have the right to publish it |
 
-## กติกาการเขียน / Writing rules
+## Writing rules
 
-1. **ทุกหัวข้อต้องตอบ 4 อย่าง**: ตัดสินใจว่าอะไร / เพราะอะไร / ตัดทางเลือกไหนทิ้ง / ตัวเลขเท่าไร
-2. **คำอธิบายเป็นไทย ชื่อของทุกอย่างในเกมเป็นอังกฤษ** (ดูหัวข้อ "กติกาการเขียน" ใน `SKILL.md`)
-3. ตัวเลขตัวอย่างต้องติดป้ายว่าเป็นตัวอย่าง ไม่ใช่ค่าที่ควรลอก
-4. ไม่เพิ่มคำแนะนำที่ใช้ขนาดทีมเป็นเหตุผลตัดไอเดีย เว้นแต่ใส่ไว้ในหัวข้อ scope
+1. Every section answers four questions: what was decided, why, which alternatives were rejected, what the numbers are.
+2. Prose in English. Every in-game name in English. Example names are invented, never taken from a shipped game's data.
+3. Example numbers are labelled as examples, not values to copy.
+4. Team size is never used as a reason to cut an idea outside a scope section.
+5. Match the house style of `SKILL.md`: sentence-case headings, no decorative emoji, no em dashes, one thought per sentence, a table where readers compare, prose where they follow an argument.
 
-## ขั้นตอน / Steps
+## Steps
 
-1. Fork แล้วสร้าง branch จาก `main`
-2. แก้ไข แล้วรันทดสอบสคริปต์ (ถ้าแตะ `scripts/`):
+1. Fork and branch from `main`.
+2. Make the change. If `scripts/` was touched, run the smoke test:
    ```bash
    python scripts/scaffold_gdd.py /tmp/gdd-test --title "Test"
    ```
-3. เปิด PR อธิบายว่า **เปลี่ยนอะไร** และ **ทำไมเอกสารที่ได้จะดีขึ้น** สั้น ๆ พอ
-4. PR ที่แตะ reference ควรมีแหล่งอ้างอิง (เกมจริง, postmortem, GDC talk, บทความ) อย่างน้อย 1 แหล่ง
-
-ภาษาใน PR และ issue ใช้ไทยหรืออังกฤษก็ได้ / Thai or English are both fine.
+3. Open a pull request that says **what changed** and **why the resulting documents get better**. Keep it short.
+4. A change to a reference cites at least one source: a shipped game, a postmortem, a GDC talk, an article.

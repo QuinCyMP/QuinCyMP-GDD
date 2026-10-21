@@ -1,13 +1,13 @@
 ---
-name: ปรับปรุง reference / Improve a reference
-about: เสนอแก้หรือเพิ่มเนื้อหาใน references/*.md
+name: Improve a reference
+about: Propose a fix or an addition to a file under references/
 labels: documentation
 ---
 
-**ไฟล์ที่เกี่ยวข้อง / File:** `references/....md`
+**File:** `references/....md`
 
-**สิ่งที่ผิดหรือขาด / What is wrong or missing:**
+**What is wrong or missing:**
 
-**ข้อเสนอ / Proposal:**
+**Proposal:**
 
-**แหล่งอ้างอิง (ถ้ามี) / Source, if any:**
+**Source, if any:**
