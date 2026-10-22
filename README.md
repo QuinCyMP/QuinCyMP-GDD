@@ -94,6 +94,10 @@ The structure of this skill follows two sets of skills whose authors publish the
 
 See [CONTRIBUTING.md](CONTRIBUTING.md). Issues labelled `good first issue` are a fine place to start.
 
+## Related
+
+[dense-melee-lab](https://github.com/QuinCyMP/dense-melee-lab) is reproducible netcode research by the same author: single-server limits for dense melee, a replica tier on unmodified Netcode for Entities, and several deciders resolving one fight bit-identically. Read it when the `mmo-systems` reference asks how many players one server can hold.
+
 ## License
 
 [MIT](LICENSE) · © 2026 QuinCyMP
