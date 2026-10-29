@@ -23,9 +23,10 @@ Pull requests that make the resulting design documents more decisive are welcome
 ## Steps
 
 1. Fork and branch from `main`.
-2. Make the change. If `scripts/` was touched, run the smoke test:
+2. Make the change. If `scripts/` was touched, run the smoke test and unit tests:
    ```bash
    python scripts/scaffold_gdd.py /tmp/gdd-test --title "Test"
+   python -m unittest scripts/test_scaffold_gdd.py
    ```
 3. Open a pull request that says **what changed** and **why the resulting documents get better**. Keep it short.
 4. A change to a reference cites at least one source: a shipped game, a postmortem, a GDC talk, an article.

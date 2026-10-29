@@ -204,6 +204,9 @@ def main() -> int:
             write_if_absent(root / "pitch" / f"{slug}.md", render(title, args.title, sections, slug), created, skipped)
 
         glossary = "\n".join([
+            "---",
+            "open-questions: 0",
+            "---",
             "# Glossary",
             "",
             f"> Game: **{args.title}** · every in-game name, English first.",
