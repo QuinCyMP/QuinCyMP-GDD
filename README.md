@@ -63,6 +63,15 @@ python scripts/scaffold_gdd.py ./design --title "Game name" --only 01,02,12,06
 
 The script never overwrites an existing file and needs only Python 3.8 and the standard library.
 
+Check an existing document set for broken wikilinks and inconsistent question counts:
+
+```bash
+python scripts/check_vault.py ./design
+```
+
+The checker reports file and line locations and exits non-zero on problems.
+See [the living-vault reference](references/living-vault.md) for supported link forms.
+
 ## Layout
 
 ```
@@ -78,6 +87,7 @@ references/
   pitch.md                    Selling or handing over the design
 scripts/
   scaffold_gdd.py             Scaffolds the document set, GLOSSARY.md and CSV tables
+  check_vault.py              Checks wikilinks and open-question counts without changing files
 agents/
   openai.yaml                 Display metadata for Codex
 ```

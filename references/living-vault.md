@@ -52,14 +52,23 @@ open-questions: 6
 ---
 ```
 
+From this skill's root, check the whole vault with Python 3.8 or newer:
+
 ```bash
-# Check the whole vault
-for f in *.md; do
-  n=$(grep -o "\[UNDECIDED" "$f" | wc -l)
-  fm=$(grep -m1 "^open-questions:" "$f" | grep -o "[0-9]*")
-  [ -n "$fm" ] && [ "$n" != "$fm" ] && echo "$f: markers=$n front matter=$fm"
-done
+python scripts/check_vault.py ./design
 ```
+
+The [checker](../scripts/check_vault.py) scans Markdown files recursively and prints
+each link or marker problem as `file:line: message`.
+It exits with code 1 when it finds a problem, 0 when both checks pass, or 2 when the
+folder argument is invalid.
+It does not change any files.
+
+The count includes every literal `[UNDECIDED` occurrence, including examples in code.
+Use one top-level `open-questions:` field with a non-negative integer in the opening
+`---` front matter; an inline YAML comment after the number is allowed.
+Missing metadata is reported when markers exist.
+A file without markers or a count, such as an older scaffold's glossary, passes.
 
 The most common and most dangerous symptom: front matter says `open-questions: 3` and the body has no marker at all. The real open work has vanished from every board and every query. Nobody will see it again.
 
@@ -72,7 +81,28 @@ In a vault that uses wikilinks (`[[file#heading|text]]`), a broken link raises n
 | **File link** | `[[filename]]` points to a file that exists |
 | **Heading link** | `[[file#heading]]`: the heading still has that exact name. Breaks most often when headings are edited. |
 
-Scripts usually trip over escaped `\|` inside tables and file names in code spans that are not real links. Write the link checker once, keep it in the project, and run it after every edit. It is far cheaper than hunting later.
+Run the same checker after editing or renaming files.
+It understands `.md` extensions, aliases including escaped `\|` in tables, same-file
+heading links, and links to attachments with an explicit extension.
+These forms follow [Obsidian's internal-link syntax](https://help.obsidian.md/links).
+Links inside inline code, fenced or indented code, front matter and HTML comments
+are skipped.
+
+Folder-qualified links start at the vault root.
+An explicit `./` or `../` path starts at the source file's folder and must stay in
+the vault.
+A bare filename first checks that folder, then the vault root, then a unique name
+anywhere in the vault.
+Ambiguous names need a folder path.
+Paths and heading names are case-sensitive.
+
+Heading checks support one ATX (`## Heading`) or Setext heading title, including
+inline code and basic emphasis in the title.
+Block IDs and chained subheading paths are reported as unsupported references.
+Ordinary Markdown links and HTML headings are not checked.
+Symbolic links are not followed.
+Boundary-word checks remain manual because the example table below does not define
+a machine-readable configuration.
 
 ## 5. Contradiction hunting
 
