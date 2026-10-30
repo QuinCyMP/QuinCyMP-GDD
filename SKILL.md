@@ -71,6 +71,7 @@ Read the file that matches the section being written. Do not read them all at on
 | [`references/world.md`](references/world.md) | File 03, or any talk of world size, maps, exploration, travel. |
 | [`references/mmo-systems.md`](references/mmo-systems.md) | Files 04 to 09 in an MMO. Server topology, concurrency, progression, social glue, endgame consumption, anti-cheat, onboarding. |
 | [`references/pitch.md`](references/pitch.md) | Any file under `pitch/`, or the user asks about selling, publishers, rights. |
+| [`references/delivery-checklist.md`](references/delivery-checklist.md) | Copying the delivery checks into a pull request or review before handing over design documents. |
 
 ## Delivery checklist
 
