@@ -80,6 +80,7 @@ DOCS = {
         ("Grouping and guilds", "What a guild can do that a friend group cannot"),
         ("Anti-griefing and reputation", "Who enforces it: the system or players"),
         ("Critical mass", "Minimum players per system, and how it degrades below that"),
+        ("Co-op for 2 to 4 players", "Why a second player matters / solo support / drop-in and drop-out / shared versus split progression / host departure and migration / maximum progress lost; record reasons, rejected alternatives and numbers"),
     ]),
     "08-endgame-liveops": ("Endgame and live ops", [
         ("After 300 hours", "The primary endgame form"),

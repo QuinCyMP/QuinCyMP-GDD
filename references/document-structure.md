@@ -112,6 +112,20 @@ Owned by [`economy.md`](economy.md).
 
 Owned by [`mmo-systems.md`](mmo-systems.md).
 
+### Co-op for 2 to 4 players
+
+For a small co-op game, answer these questions instead of assuming a public MMO population. Record the chosen rule, its reason, a rejected alternative and a measurable limit for each row.
+
+| Decision | Questions to answer | Illustrative example, not a default |
+|---|---|---|
+| Why a second player matters | Which interaction needs another person? Is solo play supported, and what changes at each party size? | Two players carry a heavy object; a solo player uses a slower cart. Reject a mandatory partner if solo completion is promised. |
+| Drop-in and drop-out | When can someone join or leave? What happens to encounter difficulty, rewards and their inventory? | Join at a checkpoint within 2 minutes; rescale the next encounter. Reject immediate rescaling if leaving would trivialise a boss. |
+| Shared or split progression | Who owns world unlocks, character upgrades and loot? How does an absent friend catch up? | World gates are shared; equipment is personal; a returning player catches up within 1 session. Reject independent gates if they prevent friends regrouping. |
+| Host departure and migration | Does play stop, resume from a shared save, or migrate live? Who may host next, and how much progress can be lost? | Resume from a checkpoint at most 60 seconds old. Reject live migration if interruption is acceptable to the design. |
+
+A shared save and seamless host migration are different promises. [Grounded's Shared Worlds announcement](https://grounded.obsidian.net/news/grounded/grounded-heads-into-the-home-stretch) describes cloud worlds that friends can host while the original host is offline. Use that distinction to choose the player experience before recording persistence and networking requirements in file 11.
+
+
 ## 08 Endgame and live ops
 
 The one question that matters: **after 300 hours, what does a player log in to do?**
