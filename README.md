@@ -61,7 +61,15 @@ python scripts/scaffold_gdd.py ./design --title "Game name"
 python scripts/scaffold_gdd.py ./design --title "Game name" --only 01,02,12,06
 ```
 
-The script never overwrites an existing file and needs only Python 3.8 and the standard library.
+Choose a genre preset with `--genre mmo` (the default) or `--genre roguelike`:
+
+```bash
+python scripts/scaffold_gdd.py ./run-design --title "Lantern Run" --genre roguelike
+```
+
+The MMO preset keeps the full 14-file set. The single-player roguelike preset omits `07-social-mmo.md` and `08-endgame-liveops.md`, and asks about run maps, resets, unlocks and replay goals. It keeps the shared pitch, glossary, item, drop, mob and skill tables, but omits the MMO xp curve and hourly economy table. File numbers stay stable. `--only` selects within the preset, so `--genre roguelike --only 04,07` creates only `04-progression.md` and no supporting files.
+
+The script never overwrites an existing file and needs only Python 3.8 and the standard library. Choosing a different genre in an existing folder leaves its files untouched; use a new folder to compare presets.
 
 ## Layout
 

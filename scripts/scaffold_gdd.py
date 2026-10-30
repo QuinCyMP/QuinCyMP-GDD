@@ -4,6 +4,7 @@
 Usage:
     python scaffold_gdd.py <target folder> --title "Game name"
     python scaffold_gdd.py ./design --title "Rustfall" --only 01,02,12,06
+    python scaffold_gdd.py ./design --title "Lantern Run" --genre roguelike
 
 Every generated file carries the standard headings, one [UNDECIDED: ...] marker
 per section so gaps stay visible instead of hidden behind prose, and an
@@ -139,6 +140,80 @@ CSV_HEADERS = {
 }
 
 
+# The MMO preset uses DOCS unchanged. Roguelike replaces genre-specific questions
+# and omits social/live-ops files while retaining shared art, pitch and risk work.
+ROGUELIKE_SECTIONS = {
+    "00-one-pager": [
+        (heading, "Run length / encounters per run / time to first victory / replay goals"
+         if heading == "The numbers" else prompt)
+        for heading, prompt in DOCS["00-one-pager"][1]
+    ],
+    "01-vision": [
+        ("Why replay", "What makes another run worth starting after victory or defeat")
+        if heading == "Why other players are needed" else (heading, prompt)
+        for heading, prompt in DOCS["01-vision"][1]
+    ],
+    "02-core-loops": [
+        ("Moment loop", "What is pressed, what responds, what is decided"),
+        ("Encounter loop", "Choices per encounter / rewards / recovery between encounters"),
+        ("Run loop", "Minutes per run / route choices / win and loss conditions / save and quit rules"),
+        ("Replay loop", "What changes between runs, what resets, and why another attempt is different"),
+    ],
+    "03-world": [
+        ("Run map", "Rooms or nodes per run / route length / branching choices"),
+        ("Encounter distribution", "Combat / rest / reward / event counts and placement constraints"),
+        ("Generation", "Hand-authored / procedural / hybrid, and safeguards against unwinnable routes"),
+        ("Traversal and gates", "Movement verbs / backtracking / information revealed before choosing a route"),
+    ],
+    "04-progression": [
+        ("Within a run", "How power grows through items, skills and player choices"),
+        ("Between runs", "Knowledge / unlocks / permanent power, and why each persists"),
+        ("Reset rules", "Exactly what death, victory and abandoning a run erase or preserve"),
+        ("Unlock pacing", "Runs to first unlock / hours to full option library / beginner-to-veteran power ratio"),
+        ("After the first victory", "Difficulty tiers / alternate routes / mastery goals, with numeric targets"),
+    ],
+    "05-combat": [
+        ("Form", "Turn-based or real-time, and the reason tied to player decisions"),
+        ("Rhythm", "Decisions per turn or second / encounter duration"),
+        ("Numbers", "Enemy health / player damage / expected turns or seconds to defeat an enemy"),
+        ("Build boundaries", "What each build does well, what it cannot do, and counters"),
+        ("Failure", "Damage and recovery budget across a run / what a loss teaches"),
+    ],
+    "06-economy": [
+        ("Run resources", "Currency and consumables gained per encounter and spent per run"),
+        ("Shops and rewards", "Prices / reward choices / reroll and removal costs"),
+        ("Scarcity", "Expected budget at each stage and the choices it forces"),
+        ("Carry-over", "Which resources survive a run and why; reject carry-over if it removes scarcity"),
+    ],
+    "09-monetization": [
+        ("Model", "Premium / paid expansions / other, and its effect on a complete run"),
+        ("What will never be sold", "Which power and replay advantages stay outside the store, and why"),
+        ("Numbers", "Price / expected revenue per sale / sales needed to break even"),
+    ],
+    "11-tech-assumptions": [
+        ("Run state", "Seed / map / inventory / enemies / unlocks that must persist"),
+        ("Save and resume", "Save frequency / rollback limit / behavior after a crash"),
+        ("Simulation", "Turn or update budget / maximum active enemies / deterministic replay needs"),
+        ("Loading", "Room transitions / run generation time / maximum loading pause"),
+    ],
+    "12-scope-roadmap": [
+        (heading, "The smallest complete run: rooms / enemies / builds / replay variation"
+         if heading == "Fallback if scope shrinks" else prompt)
+        for heading, prompt in DOCS["12-scope-roadmap"][1]
+    ],
+}
+
+
+def genre_docs(genre):
+    if genre == "mmo":
+        return DOCS
+    return {
+        slug: (title, ROGUELIKE_SECTIONS.get(slug, sections))
+        for slug, (title, sections) in DOCS.items()
+        if slug not in {"07-social-mmo", "08-endgame-liveops"}
+    }
+
+
 def render(title: str, game: str, sections, slug: str) -> str:
     lines = [
         "---",
@@ -182,7 +257,9 @@ def main() -> int:
     ap = argparse.ArgumentParser(description="Scaffold a game design document set")
     ap.add_argument("target", help="target folder, for example ./design")
     ap.add_argument("--title", required=True, help="game name")
-    ap.add_argument("--only", help="generate only these files, for example 01,02,12,06")
+    ap.add_argument("--only", help="generate only these numbered files within the genre preset, for example 01,02,12,06")
+    ap.add_argument("--genre", choices=("mmo", "roguelike"), default="mmo",
+                    help="question and file preset (default: mmo; roguelike: single-player runs)")
     args = ap.parse_args()
 
     root = Path(args.target)
@@ -194,7 +271,7 @@ def main() -> int:
     if args.only:
         wanted = {p.strip().lstrip("0") or "0" for p in args.only.split(",") if p.strip()}
 
-    for slug, (title, sections) in DOCS.items():
+    for slug, (title, sections) in genre_docs(args.genre).items():
         if wanted and (slug.split("-")[0].lstrip("0") or "0") not in wanted:
             continue
         write_if_absent(root / f"{slug}.md", render(title, args.title, sections, slug), created, skipped)
@@ -216,6 +293,8 @@ def main() -> int:
         write_if_absent(root / "GLOSSARY.md", glossary, created, skipped)
 
         for name, headers in CSV_HEADERS.items():
+            if args.genre == "roguelike" and name in {"xp-curve.csv", "economy-flow.csv"}:
+                continue
             path = root / "data" / name
             if path.exists():
                 skipped.append(path)
