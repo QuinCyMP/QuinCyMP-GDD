@@ -69,6 +69,7 @@ Read the file that matches the section being written. Do not read them all at on
 | [`references/classes-and-skills.md`](references/classes-and-skills.md) | Any ability the player chooses: classes, jobs, build paths, skills, perks. The verb count, the five criteria, the nine prohibitions, the four research shelves, slots versus library. |
 | [`references/economy.md`](references/economy.md) | File 06, file 04, or any table in `data/`. Faucet and sink, drop rate and pity, xp curves, power ratios, market liquidity, time as currency. |
 | [`references/world.md`](references/world.md) | File 03, or any talk of world size, maps, exploration, travel. |
+| [`references/gacha.md`](references/gacha.md) | Gacha or mobile live service: pity, banners, monetization, revenue metrics, dailies and stamina. |
 | [`references/mmo-systems.md`](references/mmo-systems.md) | Files 04 to 09 in an MMO. Server topology, concurrency, progression, social glue, endgame consumption, anti-cheat, onboarding. |
 | [`references/pitch.md`](references/pitch.md) | Any file under `pitch/`, or the user asks about selling, publishers, rights. |
 
