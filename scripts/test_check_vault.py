@@ -59,6 +59,30 @@ class VaultTests(unittest.TestCase):
             ("nested/source.md", 4, "missing heading 'Gone' in 'nested/source.md'"),
         ])
 
+    def test_list_continuations_distinguish_prose_from_code(self):
+        self.write("source.md", "\n".join([
+            "- Item",
+            "",
+            "    Continuation with [[prose-link]].",
+            "",
+            "      [[indented-example]]",
+            "",
+            "    ```md",
+            "    [[fenced-example]]",
+            "    ```",
+            "",
+            "    - Nested item",
+            "",
+            "      Continuation with [[nested-link]].",
+            "",
+            "[[top-level-link]]",
+        ]))
+        self.assertEqual(check_vault(self.root), [
+            ("source.md", 3, "missing file 'prose-link'"),
+            ("source.md", 13, "missing file 'nested-link'"),
+            ("source.md", 15, "missing file 'top-level-link'"),
+        ])
+
     def test_ignores_code_comments_front_matter_and_escaped_links(self):
         self.write("source.md", "\n".join([
             "---", 'example: "[[missing]]"', "---",

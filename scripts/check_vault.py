@@ -23,11 +23,43 @@ LITERAL = re.compile(
     re.MULTILINE | re.DOTALL,
 )
 WIKILINK = re.compile(r"(?<!\\)\[\[([^\]\n]*)\]\]")
+LIST_ITEM = re.compile(r"^ {0,3}(?:[-+*]|\d{1,9}[.)]) {1,4}(?=\S)")
+FENCE = re.compile(r"^ {0,3}(`{3,}|~{3,})([^\n]*)")
 
 
 def blank(text):
     """Hide syntax without changing the offsets used for line numbers."""
     return re.sub(r"[^\n]", " ", text)
+
+
+def list_relative_lines(lines):
+    """Remove list container indentation before testing for code indentation."""
+    indents = []
+    fence = None
+    for line in lines:
+        if not line.strip():
+            yield line
+            continue
+
+        prefix = re.match(r"^[ \t]*", line)[0]
+        indent = len(prefix.expandtabs(4))
+        while indents and indents[-1] > indent:
+            indents.pop()
+        container = indents[-1] if indents else 0
+        relative = " " * (indent - container) + line[len(prefix):]
+        if fence is None:
+            item = LIST_ITEM.match(relative)
+            if item:
+                indents.append(container + item.end())
+                relative = relative[item.end():]
+            opening = FENCE.match(relative)
+            if opening and (opening[1][0] == "~" or "`" not in opening[2]):
+                fence = opening[1]
+        else:
+            closing = FENCE.match(relative)
+            if closing and closing[1].startswith(fence) and not closing[2].strip():
+                fence = None
+        yield relative
 
 
 def markdown_body(text):
@@ -41,7 +73,8 @@ def markdown_body(text):
                 break
         else:
             break
-    return LITERAL.sub(lambda m: m[0] if m["inline"] else blank(m[0]), "".join(lines))
+    body = "".join(list_relative_lines(lines))
+    return LITERAL.sub(lambda m: m[0] if m["inline"] else blank(m[0]), body)
 
 
 def heading_text(text):
